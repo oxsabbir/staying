@@ -24,6 +24,11 @@ const destinations = [
     image:
       "https://images.unsplash.com/photo-1605648916361-9bc12ad6a569?auto=format&fit=crop&w=900&q=80",
   },
+  {
+    name: "Tabuk",
+    image:
+      "https://images.unsplash.com/photo-1624479904978-688b1a5e9274?auto=format&fit=crop&w=900&q=80",
+  },
 ];
 
 export default function TrendingDestinations() {
@@ -31,10 +36,8 @@ export default function TrendingDestinations() {
     <section className="py-8">
       <div className="container">
         <div className="mb-4 flex items-center justify-between gap-4">
-          <h2 className="text-[1.35rem] font-semibold">
-            Trending destinations
-          </h2>
-          <button className="text-link">See all</button>
+          <h2 className="text-2xl font-semibold">Trending destinations</h2>
+          {/* <button className="text-link">See all</button> */}
         </div>
         <div className="grid grid-cols-4 gap-4 max-[960px]:grid-cols-2">
           {destinations.map((dest, index) => (
@@ -49,7 +52,6 @@ export default function TrendingDestinations() {
             >
               <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white drop-shadow">
                 <h3 className="font-semibold">{dest.name}</h3>
-                <span className="h-3 w-5 rounded-[2px] bg-[linear-gradient(90deg,#d32f2f_0_50%,#f5f5f5_50%_100%)]" />
               </div>
             </div>
           ))}

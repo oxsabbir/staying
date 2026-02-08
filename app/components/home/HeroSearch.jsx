@@ -44,21 +44,26 @@ function RoomGuestSelector({ value, onChange, onDone }) {
   };
 
   return (
-    <div className="flex w-full flex-col gap-4 text-text">
+    <div className="flex w-full  flex-col gap-4 text-text">
       <div className="space-y-3">
         {[
           { label: "Adults", field: "adults" },
           { label: "Children", field: "children" },
           { label: "Rooms", field: "rooms" },
         ].map((item) => (
-          <div key={item.field} className="flex items-center justify-between text-sm">
+          <div
+            key={item.field}
+            className="flex items-center justify-between text-sm"
+          >
             <span className="text-muted">{item.label}</span>
             <div className="flex items-center rounded-sm border border-border">
               <button
                 type="button"
                 className="h-8 w-8 text-base text-muted disabled:text-muted/40"
                 onClick={() => updateValue(item.field, -1)}
-                disabled={value[item.field] === (item.field === "children" ? 0 : 1)}
+                disabled={
+                  value[item.field] === (item.field === "children" ? 0 : 1)
+                }
               >
                 -
               </button>
@@ -116,13 +121,14 @@ export default function HeroSearch() {
     return { year, month, cells };
   }, [today]);
 
-  const monthLabel = new Date(calendar.year, calendar.month, 1).toLocaleDateString(
-    "en-US",
-    {
-      month: "long",
-      year: "numeric",
-    }
-  );
+  const monthLabel = new Date(
+    calendar.year,
+    calendar.month,
+    1,
+  ).toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
 
   const toIsoDate = (day) => {
     const month = String(calendar.month + 1).padStart(2, "0");
@@ -149,7 +155,10 @@ export default function HeroSearch() {
       return "Check-in date — Check-out date";
     }
     const format = (value) =>
-      new Date(value).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+      new Date(value).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
     if (checkIn && checkOut) {
       return `${format(checkIn)} - ${format(checkOut)}`;
     }
@@ -178,14 +187,16 @@ export default function HeroSearch() {
         </p>
         <form
           onSubmit={handleSubmit}
-          className="mt-6 grid grid-cols-[repeat(3,minmax(180px,1fr))_140px] overflow-hidden rounded-sm border-[3px] border-accent bg-white max-[960px]:grid-cols-1"
+          className="mt-6 flex flex-col items-center justify-between gap-4 rounded-sm border-4 border-accent bg-white lg:flex-row"
         >
-          <div className="relative flex items-center gap-2 border-r border-border p-3 text-muted max-[960px]:border-b max-[960px]:border-r-0">
+          <div className="relative flex md:w-8/12 w-full items-center gap-2 border-r border-border p-3 text-muted max-[960px]:border-b  max-[960px]:border-r-0">
             <FiMapPin />
             <button
               type="button"
               onClick={() =>
-                setOpenDropdown((current) => (current === "city" ? null : "city"))
+                setOpenDropdown((current) =>
+                  current === "city" ? null : "city",
+                )
               }
               className="flex w-full items-center justify-between text-left text-text"
             >
@@ -247,12 +258,14 @@ export default function HeroSearch() {
               </div>
             )}
           </div>
-          <div className="relative flex items-center gap-2 border-r border-border p-3 text-muted max-[960px]:border-b max-[960px]:border-r-0">
+          <div className="relative w-full  flex items-center gap-2 border-r border-border p-3 text-muted max-[960px]:border-b max-[960px]:border-r-0">
             <FiCalendar />
             <button
               type="button"
               onClick={() =>
-                setOpenDropdown((current) => (current === "date" ? null : "date"))
+                setOpenDropdown((current) =>
+                  current === "date" ? null : "date",
+                )
               }
               className="flex w-full items-center justify-between text-left text-text"
             >
@@ -265,7 +278,9 @@ export default function HeroSearch() {
                   Calendar
                 </div>
                 <div className="my-2 h-px bg-link/30" />
-                <div className="text-center text-sm font-semibold">{monthLabel}</div>
+                <div className="text-center text-sm font-semibold">
+                  {monthLabel}
+                </div>
                 <div className="mt-3 grid grid-cols-7 gap-1 text-center text-xs text-muted">
                   {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
                     <span key={day}>{day}</span>
@@ -280,7 +295,10 @@ export default function HeroSearch() {
                     const isStart = checkIn === isoDate;
                     const isEnd = checkOut === isoDate;
                     const isInRange =
-                      checkIn && checkOut && isoDate > checkIn && isoDate < checkOut;
+                      checkIn &&
+                      checkOut &&
+                      isoDate > checkIn &&
+                      isoDate < checkOut;
                     return (
                       <button
                         key={isoDate}
@@ -290,8 +308,8 @@ export default function HeroSearch() {
                           isStart || isEnd
                             ? "bg-link text-white"
                             : isInRange
-                            ? "bg-link/10 text-link"
-                            : "text-text hover:bg-link/10"
+                              ? "bg-link/10 text-link"
+                              : "text-text hover:bg-link/10"
                         }`}
                       >
                         {day}
@@ -313,17 +331,20 @@ export default function HeroSearch() {
               </div>
             )}
           </div>
-          <div className="relative flex items-start gap-2 border-r border-border p-3 text-muted max-[960px]:border-b max-[960px]:border-r-0">
+          <div className="relative w-full  flex items-start gap-2 border-r border-border p-3 text-muted max-[960px]:border-b max-[960px]:border-r-0">
             <FiUsers className="mt-1" />
             <button
               type="button"
               onClick={() =>
-                setOpenDropdown((current) => (current === "guests" ? null : "guests"))
+                setOpenDropdown((current) =>
+                  current === "guests" ? null : "guests",
+                )
               }
               className="flex w-full items-center justify-between text-left text-text"
             >
               <span>
-                {guests.adults} adults · {guests.children} children · {guests.rooms} room
+                {guests.adults} adults · {guests.children} children ·{" "}
+                {guests.rooms} room
               </span>
               <span className="text-xs text-muted">▾</span>
             </button>
@@ -364,7 +385,7 @@ export default function HeroSearch() {
           </div>
           <button
             type="submit"
-            className="flex items-center justify-center gap-2 bg-link font-semibold text-white max-[960px]:p-3"
+            className="flex md:w-8/12 w-full  py-3 rounded-sm items-center justify-center gap-2 bg-link font-semibold text-white max-[960px]:p-3"
           >
             <FiSearch />
             Search
