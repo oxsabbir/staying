@@ -7,15 +7,17 @@ import {
   FiShare2,
   FiHeart,
 } from "react-icons/fi";
-import { roomDetails, roomSections } from "../../../data/roomDetails";
+import { roomDetailsData, roomSections } from "../../../data/roomDetails";
 
-export default function RoomDetailsPage() {
-  const room = roomDetails;
+export default async function RoomDetailsPage({ params }) {
+  const paramsResult = await params;
+
+  const room = roomDetailsData[paramsResult.slug];
 
   return (
     <div className="min-h-screen bg-bg text-text">
       <header className="bg-primary text-white pt-4 pb-3">
-      <div className="container flex items-center justify-between gap-5 pb-3">
+        <div className="container flex items-center justify-between gap-5 pb-3">
           <div className="text-xl font-bold">Booking.com</div>
           <div className="flex flex-wrap items-center gap-2">
             <button className="rounded-xs border border-transparent px-3 py-2 text-white">
@@ -35,7 +37,7 @@ export default function RoomDetailsPage() {
             </button>
           </div>
         </div>
-      <div className="container pb-4">
+        <div className="container pb-4">
           <div className="grid grid-cols-[repeat(3,minmax(180px,1fr))_140px] overflow-hidden rounded-sm border-2 border-accent bg-white max-[960px]:grid-cols-1">
             <div className="flex items-center gap-2 border-r border-border p-3 text-muted max-[960px]:border-b max-[960px]:border-r-0">
               <FiMapPin />

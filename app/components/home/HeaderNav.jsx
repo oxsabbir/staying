@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { BiMenu } from "react-icons/bi";
 
@@ -9,17 +10,19 @@ export default function HeaderNav({ navLinks }) {
   return (
     <header className="sticky md:relative top-0 z-40 bg-primary text-white pt-4  shadow-sm">
       <div className="container flex items-center justify-between gap-5 pb-3">
-        <div className="text-xl font-bold">Booking.com</div>
+        <Link href="/">
+          <div className="text-xl font-bold select-none">Staying.com</div>
+        </Link>
 
         <div className="hidden flex-wrap items-center gap-2 md:flex">
           <button className="rounded-xs border border-transparent px-3 py-2 text-white">
             List your property
           </button>
           <button className="rounded-xs border border-white px-3 py-2 text-white">
-            Register
+            Contact
           </button>
           <button className="rounded-xs bg-white px-3 py-2 font-semibold text-primary">
-            Sign in
+            Book Now
           </button>
         </div>
 

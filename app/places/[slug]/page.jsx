@@ -19,6 +19,7 @@ export function generateStaticParams() {
 export default async function PlacePage({ params }) {
   const decodedParams = await params;
   const place = getPlaceBySlug(decodedParams.slug);
+  console.log(place);
 
   if (!place) {
     notFound();

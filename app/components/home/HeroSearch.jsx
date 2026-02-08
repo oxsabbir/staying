@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { FiMapPin, FiCalendar, FiUsers, FiSearch } from "react-icons/fi";
+import { useRouter } from "next/navigation";
+import { FiCalendar, FiMapPin, FiSearch, FiUsers } from "react-icons/fi";
 
 const SAUDI_CITIES = [
   "Riyadh",
@@ -14,13 +15,6 @@ const SAUDI_CITIES = [
   "Abha",
   "Tabuk",
   "AlUla",
-];
-
-const RECENT_SEARCHES = [
-  {
-    city: "Riyadh",
-    meta: "Feb 9 - Feb 12, 2 adults",
-  },
 ];
 
 const TRENDING_DESTINATIONS = [
@@ -103,6 +97,7 @@ export default function HeroSearch() {
   });
   const [travelingWithPets, setTravelingWithPets] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
+  const router = useRouter();
 
   const today = useMemo(() => new Date(), []);
   const calendar = useMemo(() => {
@@ -167,13 +162,8 @@ export default function HeroSearch() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Search payload:", {
-      city,
-      checkIn,
-      checkOut,
-      guests,
-      travelingWithPets,
-    });
+    const citySlug = city.toLowerCase().replace(/\s+/g, "-");
+    router.push(`/places/${citySlug}`);
   };
 
   return (
@@ -204,8 +194,8 @@ export default function HeroSearch() {
               <span className="text-xs text-muted">▾</span>
             </button>
             {openDropdown === "city" && (
-              <div className="absolute left-3 top-full z-20 mt-3 w-[280px] rounded-md border border-border bg-white p-3 text-text shadow-lg">
-                <div className="mb-3">
+              <div className="absolute left-3 top-full z-20 mt-3 w-[280px] max-h-[400px] overflow-auto rounded-md border border-border bg-white p-3 text-text shadow-lg">
+                {/* <div className="mb-3">
                   <p className="text-xs font-semibold uppercase text-muted">
                     Your recent searches
                   </p>
@@ -228,29 +218,29 @@ export default function HeroSearch() {
                       </button>
                     ))}
                   </div>
-                </div>
+                </div> */}
                 <p className="text-xs font-semibold uppercase text-muted">
                   Trending destinations
                 </p>
                 <div className="mt-2 rounded-sm border border-border">
-                  {TRENDING_DESTINATIONS.map((item, index) => (
+                  {SAUDI_CITIES.map((item, index) => (
                     <button
-                      key={item.city}
+                      key={item}
                       type="button"
                       className={`flex w-full items-center gap-2 px-2 py-2 text-left text-sm ${
-                        index !== TRENDING_DESTINATIONS.length - 1
+                        index !== SAUDI_CITIES.length - 1
                           ? "border-b border-border"
                           : ""
                       }`}
                       onClick={() => {
-                        setCity(item.city);
+                        setCity(item);
                         setOpenDropdown(null);
                       }}
                     >
                       <FiMapPin className="text-muted" />
                       <div>
-                        <p className="font-semibold">{item.city}</p>
-                        <p className="text-xs text-muted">{item.country}</p>
+                        <p className="font-semibold">{item}</p>
+                        <p className="text-xs text-muted">Saudi Arabia</p>
                       </div>
                     </button>
                   ))}

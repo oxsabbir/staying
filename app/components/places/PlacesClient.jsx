@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
 import { FiChevronDown, FiHeart, FiMapPin } from "react-icons/fi";
 
@@ -124,16 +125,18 @@ function PropertyCard({ property }) {
   return (
     <div className="rounded-lg border border-border bg-white p-4 shadow-sm">
       <div className="grid gap-4 lg:grid-cols-[220px_1fr]">
-        <div className="relative">
-          <img
-            src={property.image}
-            alt={property.name}
-            className="h-52 w-full rounded-md object-cover sm:h-48 lg:h-44"
-          />
-          <button className="absolute right-2 top-2 rounded-full bg-white/90 p-2 text-primary shadow">
-            <FiHeart />
-          </button>
-        </div>
+        <Link href={`/rooms/${property.id}`}>
+          <div className="relative">
+            <img
+              src={property.image}
+              alt={property.name}
+              className="h-52 w-full rounded-md object-cover sm:h-48 lg:h-44"
+            />
+            <button className="absolute right-2 top-2 rounded-full bg-white/90 p-2 text-primary shadow">
+              <FiHeart />
+            </button>
+          </div>
+        </Link>
 
         <div className="grid gap-4 lg:grid-cols-[1fr_auto]">
           <div>
@@ -195,9 +198,11 @@ function PropertyCard({ property }) {
               </div>
             </div>
 
-            <button className="w-full rounded-md bg-link px-4 py-2 text-sm font-semibold text-white sm:w-auto">
-              See availability
-            </button>
+            <Link href={`/rooms/${property.id}`}>
+              <button className="w-full rounded-md bg-link px-4 py-2 text-sm font-semibold text-white sm:w-auto">
+                See availability
+              </button>
+            </Link>
           </div>
         </div>
       </div>
