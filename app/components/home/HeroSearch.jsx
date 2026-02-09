@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   FiCalendar,
@@ -74,7 +74,7 @@ function RoomGuestSelector({ value, onChange, onDone }) {
   );
 }
 
-export default function HeroSearch({ isReserving }) {
+export default function HeroSearch({ isReserving, roomName, roomUrl }) {
   const [city, setCity] = useState(SAUDI_CITIES[0]);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -87,6 +87,16 @@ export default function HeroSearch({ isReserving }) {
   const [openDropdown, setOpenDropdown] = useState(null);
   const router = useRouter();
   const { updateData, data } = useSearchContext();
+
+  // Add useEffect to pre-fill form fields when isReserving is true and data is available
+  useEffect(() => {
+    if (isReserving && data) {
+      setCity(data.city || SAUDI_CITIES[0]);
+      setCheckIn(data.checkIn || "");
+      setCheckOut(data.checkOut || "");
+      setGuests(data.guests || { adults: 2, children: 0, rooms: 1 });
+    }
+  }, [isReserving, data]);
 
   const today = useMemo(() => new Date(), []);
   const calendar = useMemo(() => {
@@ -179,15 +189,19 @@ export default function HeroSearch({ isReserving }) {
   };
 
   const handleReserve = () => {
-    const citySlug = city.toLowerCase().replace(/\s+/g, "-");
-    updateData({
-      city: city,
-      checkIn,
-      checkOut,
-      totalGuest: guests.adults + guests.children,
-      guests: guests,
-    });
-    router.push(`/places/${citySlug}/reserve`);
+    // Construct the WhatsApp message
+    const message = `Hello, I would like to reserve the following:\n
+Room: ${roomName || "Selected Room"}
+Check-in: ${checkIn}
+Check-out: ${checkOut}
+Adults: ${guests.adults}
+Children: ${guests.children}
+Rooms: ${guests.rooms}
+Room URL: ${roomUrl || window.location.href}
+\nThank you!`;
+
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/966545759715?text=${encodedMessage}`, "_blank");
   };
 
   return (

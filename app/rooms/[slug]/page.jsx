@@ -15,6 +15,7 @@ import { useState } from "react";
 import SiteFooter from "../../components/home/SiteFooter";
 import Wishlist from "../../components/shared/Wishlist";
 import { HeroSearch } from "../../components/home";
+import { useSearchContext } from "../../context/SearchContext";
 
 export default function RoomDetailsPage() {
   const paramsResult = useParams();
@@ -22,6 +23,7 @@ export default function RoomDetailsPage() {
 
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const { updateData } = useSearchContext();
 
   return (
     <div className="min-h-screen bg-bg text-text">
@@ -92,7 +94,18 @@ export default function RoomDetailsPage() {
           <div className="flex items-center gap-2">
             <Wishlist />
 
-            <button className="rounded-xs text-white bg-primary px-3 py-2 font-semibold text-primary">
+            <button
+              onClick={() => {
+                updateData({
+                  roomName: room.name,
+                  roomUrl: window.location.href,
+                });
+                document
+                  .getElementById("reservation-section")
+                  .scrollIntoView({ behavior: "smooth" });
+              }}
+              className="rounded-xs text-white bg-primary px-3 py-2 font-semibold text-primary"
+            >
               Reserve
             </button>
           </div>
@@ -136,7 +149,18 @@ export default function RoomDetailsPage() {
                   </div>
                 ))}
               </div>
-              <button className="rounded-xs bg-primary px-3 hover:opacity-90 duration-200 py-2 font-semibold text-white">
+              <button
+                onClick={() => {
+                  updateData({
+                    roomName: room.name,
+                    roomUrl: window.location.href,
+                  });
+                  document
+                    .getElementById("reservation-section")
+                    .scrollIntoView({ behavior: "smooth" });
+                }}
+                className="rounded-xs bg-primary px-3 hover:opacity-90 duration-200 py-2 font-semibold text-white"
+              >
                 I Will Reserve
               </button>
             </div>
@@ -173,7 +197,7 @@ export default function RoomDetailsPage() {
           </div>
         </section>
 
-        <section className="bg-subtle py-7">
+        <section id="reservation-section" className="bg-subtle py-7">
           <div className="container">
             <div className="mb-4 flex items-center justify-between gap-4">
               <h2 className="text-[1.3rem] font-semibold">Availability</h2>
