@@ -1,33 +1,35 @@
+import Link from "next/link";
+
 const destinations = [
   {
     name: "Riyadh",
-    image:
-      "https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?auto=format&fit=crop&w=900&q=80",
+    link: "/places/riyadh",
+    image: "/images/destinations/riyadh.jpg",
   },
   {
     name: "Jeddah",
-    image:
-      "https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?auto=format&fit=crop&w=900&q=80",
+    link: "/places/jeddah",
+    image: "/images/destinations/jeddah.jpg",
   },
   {
     name: "Mecca",
-    image:
-      "https://images.unsplash.com/photo-1532285195600-1c504063a868?auto=format&fit=crop&w=900&q=80",
+    link: "/places/mecca",
+    image: "/images/destinations/mecca.jpg",
   },
   {
     name: "Medina",
-    image:
-      "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?auto=format&fit=crop&w=900&q=80",
+    link: "/places/medina",
+    image: "/images/destinations/medina.jpg",
   },
   {
     name: "AlUla",
-    image:
-      "https://images.unsplash.com/photo-1605648916361-9bc12ad6a569?auto=format&fit=crop&w=900&q=80",
+    link: "/places/alula",
+    image: "/images/destinations/alula.jpg",
   },
   {
     name: "Tabuk",
-    image:
-      "https://images.unsplash.com/photo-1624479904978-688b1a5e9274?auto=format&fit=crop&w=900&q=80",
+    link: "/places/tabuk",
+    image: "/images/destinations/tabuk.jpg",
   },
 ];
 
@@ -45,14 +47,17 @@ export default function TrendingDestinations() {
               key={dest.name}
               className={`relative overflow-hidden rounded-sm bg-cover bg-center ${
                 index < 2
-                  ? "col-span-2 h-[260px] max-[640px]:col-span-1"
+                  ? "col-span-2 h-[160px] md:h-[260px] max-[640px]:col-span-1"
                   : "h-[160px]"
               }`}
               style={{ backgroundImage: `url(${dest.image})` }}
             >
-              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white drop-shadow">
-                <h3 className="font-semibold">{dest.name}</h3>
-              </div>
+              <Link href={dest.link}>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#00000084] to-transparent"></div>
+                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white drop-shadow">
+                  <h3 className="font-semibold">{dest.name}</h3>
+                </div>
+              </Link>
             </div>
           ))}
         </div>

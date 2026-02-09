@@ -11,7 +11,7 @@ import {
   HomesGuestsLove,
   NewsletterCTA,
   TravelMore,
-  PopularBangladesh,
+  PopularSaudiDestinations,
   SiteFooter,
 } from "./components/home";
 import customerSupport from "../public/images/CustomerSupport.png";
@@ -184,7 +184,7 @@ export default function Home() {
       <HomesGuestsLove items={homes} />
       <NewsletterCTA />
       <TravelMore />
-      <PopularBangladesh />
+      <PopularSaudiDestinations />
       <SiteFooter />
     </div>
   );

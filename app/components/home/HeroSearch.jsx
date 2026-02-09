@@ -3,27 +3,9 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiCalendar, FiMapPin, FiSearch, FiUsers } from "react-icons/fi";
+import { useSearchContext } from "../../context/SearchContext";
 
-const SAUDI_CITIES = [
-  "Riyadh",
-  "Jeddah",
-  "Mecca",
-  "Medina",
-  "Dammam",
-  "Al Khobar",
-  "Taif",
-  "Abha",
-  "Tabuk",
-  "AlUla",
-];
-
-const TRENDING_DESTINATIONS = [
-  { city: "Jeddah", country: "Saudi Arabia" },
-  { city: "Mecca", country: "Saudi Arabia" },
-  { city: "Medina", country: "Saudi Arabia" },
-  { city: "Dammam", country: "Saudi Arabia" },
-  { city: "AlUla", country: "Saudi Arabia" },
-];
+const SAUDI_CITIES = ["Riyadh", "Jeddah", "Mecca", "Medina", "AlUla", "Tabuk"];
 
 function RoomGuestSelector({ value, onChange, onDone }) {
   const updateValue = (field, delta) => {
@@ -98,6 +80,7 @@ export default function HeroSearch() {
   const [travelingWithPets, setTravelingWithPets] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const router = useRouter();
+  const { updateData } = useSearchContext();
 
   const today = useMemo(() => new Date(), []);
   const calendar = useMemo(() => {
@@ -132,6 +115,21 @@ export default function HeroSearch() {
   };
 
   const handleDaySelect = (day) => {
+    const selectedDateObj = new Date(calendar.year, calendar.month, day);
+    selectedDateObj.setHours(0, 0, 0, 0); // Normalize to start of day
+
+    const todayDateOnly = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+    );
+    todayDateOnly.setHours(0, 0, 0, 0); // Normalize to start of day
+
+    if (selectedDateObj < todayDateOnly) {
+      // If the selected date is in the past, do nothing
+      return;
+    }
+
     const isoDate = toIsoDate(day);
     if (!checkIn || (checkIn && checkOut)) {
       setCheckIn(isoDate);
@@ -142,6 +140,7 @@ export default function HeroSearch() {
       setCheckOut(isoDate);
     } else {
       setCheckIn(isoDate);
+      setCheckOut(""); // Clear checkout if checkIn is set to a date before current checkIn
     }
   };
 
@@ -163,6 +162,13 @@ export default function HeroSearch() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const citySlug = city.toLowerCase().replace(/\s+/g, "-");
+    updateData({
+      city: city,
+      checkIn,
+      checkOut,
+      totalGuest: guests.adults + guests.children,
+      guests: guests,
+    });
     router.push(`/places/${citySlug}`);
   };
 
@@ -195,30 +201,6 @@ export default function HeroSearch() {
             </button>
             {openDropdown === "city" && (
               <div className="absolute left-3 top-full z-20 mt-3 w-[280px] max-h-[400px] overflow-auto rounded-md border border-border bg-white p-3 text-text shadow-lg">
-                {/* <div className="mb-3">
-                  <p className="text-xs font-semibold uppercase text-muted">
-                    Your recent searches
-                  </p>
-                  <div className="mt-2 rounded-sm border border-border p-2">
-                    {RECENT_SEARCHES.map((item) => (
-                      <button
-                        key={item.city}
-                        type="button"
-                        className="flex w-full items-start gap-2 text-left text-sm"
-                        onClick={() => {
-                          setCity(item.city);
-                          setOpenDropdown(null);
-                        }}
-                      >
-                        <FiMapPin className="mt-0.5 text-muted" />
-                        <div>
-                          <p className="font-semibold">{item.city}</p>
-                          <p className="text-xs text-muted">{item.meta}</p>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div> */}
                 <p className="text-xs font-semibold uppercase text-muted">
                   Trending destinations
                 </p>
@@ -281,6 +263,20 @@ export default function HeroSearch() {
                     if (!day) {
                       return <span key={`blank-${index}`} className="h-8" />;
                     }
+                    const selectedDateObj = new Date(
+                      calendar.year,
+                      calendar.month,
+                      day,
+                    );
+                    selectedDateObj.setHours(0, 0, 0, 0); // Normalize to start of day
+                    const todayDateOnly = new Date(
+                      today.getFullYear(),
+                      today.getMonth(),
+                      today.getDate(),
+                    );
+                    todayDateOnly.setHours(0, 0, 0, 0); // Normalize to start of day
+                    const isPastDate = selectedDateObj < todayDateOnly;
+
                     const isoDate = toIsoDate(day);
                     const isStart = checkIn === isoDate;
                     const isEnd = checkOut === isoDate;
@@ -300,7 +296,8 @@ export default function HeroSearch() {
                             : isInRange
                               ? "bg-link/10 text-link"
                               : "text-text hover:bg-link/10"
-                        }`}
+                        } ${isPastDate ? "cursor-not-allowed opacity-50" : ""}`}
+                        disabled={isPastDate}
                       >
                         {day}
                       </button>
@@ -345,22 +342,7 @@ export default function HeroSearch() {
                   onChange={setGuests}
                   onDone={() => setOpenDropdown(null)}
                 />
-                <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-xs text-muted">
-                  <span>Traveling with pets?</span>
-                  <button
-                    type="button"
-                    onClick={() => setTravelingWithPets((prev) => !prev)}
-                    className={`relative h-5 w-9 rounded-full transition ${
-                      travelingWithPets ? "bg-link" : "bg-border"
-                    }`}
-                  >
-                    <span
-                      className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition ${
-                        travelingWithPets ? "left-4" : "left-0.5"
-                      }`}
-                    />
-                  </button>
-                </div>
+
                 <p className="mt-2 text-[11px] text-muted">
                   Assistance animals are not considered pets.
                 </p>

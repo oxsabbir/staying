@@ -9,7 +9,7 @@ export default function UniqueProperties() {
 
   useEffect(() => {
     // Simple shuffle and slice to get 10 random items
-    setRandomProperties(roomData.slice(0, 10));
+    setRandomProperties(roomData.slice(0, 8));
   }, []);
 
   return (

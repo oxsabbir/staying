@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
 import { FiChevronDown, FiHeart, FiMapPin } from "react-icons/fi";
 import { roomData } from "../../../data/room_data";
+import { useSearchContext } from "../../context/SearchContext";
 const navPill =
   "rounded-full border border-primary/30 px-3 py-2 text-xs font-medium text-primary";
 
@@ -18,28 +19,24 @@ function Breadcrumbs({ place }) {
 }
 
 function SearchBar({ place }) {
+  const { data } = useSearchContext();
   return (
     <div className="mt-4 rounded-lg border border-accent/60 bg-white p-3 shadow-sm">
       <div className="grid gap-3 lg:grid-cols-[1.3fr_1fr_1fr_auto]">
         <div className="flex items-center gap-2 rounded-md border border-accent/60 px-3 py-2">
           <FiMapPin className="text-primary" />
-          <input
-            className="w-full text-sm outline-none"
-            defaultValue={place.name}
-            aria-label="Destination"
-          />
+          <p className="w-full text-sm outline-none" aria-label="Destination">
+            {data.city}
+          </p>
         </div>
         <div className="flex items-center gap-2 rounded-md border border-accent/60 px-3 py-2">
-          <span className="text-xs text-muted">{place.search.checkIn}</span>
-          <span className="text-xs text-muted">—</span>
-          <span className="text-xs text-muted">{place.search.checkOut}</span>
+          <span className="text-sm ">Check In {data.checkIn}</span>
+          <span className="text-sm ">—</span>
+          <span className="text-sm ">Check Out {data.checkOut}</span>
         </div>
         <div className="flex items-center gap-2 rounded-md border border-accent/60 px-3 py-2">
-          <span className="text-xs text-muted">{place.search.guests}</span>
+          <span className="text-sm ">Total Guest : {data.totalGuest}</span>
         </div>
-        <button className="rounded-md bg-accent px-5 py-2 text-sm font-semibold text-primary">
-          Search
-        </button>
       </div>
     </div>
   );
