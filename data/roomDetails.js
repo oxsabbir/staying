@@ -17,6 +17,7 @@ const generateRoomDetails = () => {
         highlight: `A popular ${prop.ratingLabel.toLowerCase()} choice in ${prop.area}.`,
         images: prop.image,
         overview: prop.description,
+        mapLink: prop.mapLink,
         facts: [
           { label: "Best for", value: "City trips, business travelers" },
           {

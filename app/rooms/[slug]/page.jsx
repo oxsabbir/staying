@@ -143,8 +143,19 @@ export default function RoomDetailsPage() {
               </button>
             </div>
             <div className="grid gap-3 rounded-sm border border-border bg-bg p-4">
-              <div className="h-[180px] rounded-xs bg-[linear-gradient(135deg,#d9e7ff,#f4f6fb)]" />
-              <button className="text-link">Show on map</button>
+              <button className="text-link">
+                <div className="h-[180px] rounded-xs ">
+                  <iframe
+                    src={room.mapLink}
+                    width="100%"
+                    height="180"
+                    style={{ border: 0 }}
+                    allowFullScreen=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </div>
+              </button>
             </div>
           </aside>
         </section>

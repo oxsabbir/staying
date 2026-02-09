@@ -11,7 +11,7 @@ const formatPrice = (value) => `SAR ${value.toLocaleString("en-US")}`;
 
 function Breadcrumbs({ place }) {
   return (
-    <div className="text-xs text-muted">
+    <div className="text-xs md:text-sm font-medium text-gray-700">
       Home / {place.country} / {place.region} / {place.name} / Search results
     </div>
   );
@@ -58,13 +58,16 @@ function Filters({
   return (
     <aside className="space-y-4">
       <div className="rounded-lg border border-border bg-white p-3 shadow-sm">
-        <div className="text-sm font-semibold">Show on map</div>
-        <div className="mt-3 overflow-hidden rounded-md border border-border">
-          <img
-            src={place.summary.mapImage}
-            alt={`${place.name} map`}
-            className="h-32 w-full object-cover"
-          />
+        <div className="h-[180px] rounded-xs ">
+          <iframe
+            src={place.summary.mapLink}
+            width="100%"
+            height="180"
+            style={{ border: 0 }}
+            allowFullScreen=""
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          ></iframe>
         </div>
       </div>
 
@@ -275,7 +278,7 @@ export default function PlacesClient({ place }) {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <h1 className="text-xl font-semibold">
-                  {place.name}: {roomData.length?.toLocaleString("en-US") || 0}{" "}
+                  {place.name}: {filtered.length?.toLocaleString("en-US") || 0}{" "}
                   properties found
                 </h1>
                 <div className="mt-2 inline-flex items-center gap-2 text-xs text-muted">

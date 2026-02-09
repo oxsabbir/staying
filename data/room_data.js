@@ -24,6 +24,8 @@ export const roomData = [
     ],
     genius: true,
     breakfastIncluded: true,
+    mapLink: `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3624.657212206409!2d46.674326!3d24.711667!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2f02f3c6d8b5b1%3A0x91b7c1a7c4f9a5c!2sFour%20Seasons%20Hotel%20Riyadh%20at%20Kingdom%20Centre!5e0!3m2!1sen!2ssa!4v1700000000001
+`,
   },
   {
     id: "fairmont-riyadh",
@@ -50,6 +52,8 @@ export const roomData = [
     ],
     genius: true,
     breakfastIncluded: true,
+    mapLink: `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3621.184775002153!2d46.716544!3d24.823489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2f01d53a15c27d%3A0x4f9c89f57c5c6c73!2sFairmont%20Riyadh!5e0!3m2!1sen!2ssa!4v1700000000002
+`,
   },
   {
     id: "narcissus-riyadh",
@@ -76,5 +80,7 @@ export const roomData = [
     ],
     genius: false,
     breakfastIncluded: false,
+    mapLink: `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3624.121827682489!2d46.681121!3d24.728349!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2f02e1a5b8cfa1%3A0x7a71c2fa09f4b61!2sNarcissus%20Hotel%20and%20Spa%20Riyadh!5e0!3m2!1sen!2ssa!4v1700000000003
+`,
   },
 ];

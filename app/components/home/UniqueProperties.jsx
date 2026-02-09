@@ -1,16 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { roomDetailsData } from "../../../data/roomDetails";
+import { roomData } from "../../../data/room_data";
 import PropertySlider from "../shared/PropertySlider";
 
 export default function UniqueProperties() {
   const [randomProperties, setRandomProperties] = useState([]);
 
   useEffect(() => {
-    const allProperties = Object.values(roomDetailsData);
     // Simple shuffle and slice to get 10 random items
-    setRandomProperties(allProperties.slice(0, 10));
+    setRandomProperties(roomData.slice(0, 10));
   }, []);
 
   return (
