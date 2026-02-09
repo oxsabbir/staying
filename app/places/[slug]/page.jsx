@@ -19,7 +19,6 @@ export function generateStaticParams() {
 export default async function PlacePage({ params }) {
   const decodedParams = await params;
   const place = getPlaceBySlug(decodedParams.slug);
-  console.log(place);
 
   if (!place) {
     notFound();
@@ -28,7 +27,7 @@ export default async function PlacePage({ params }) {
   return (
     <div className="min-h-screen bg-bg text-text">
       <HeaderNav navLinks={navLinks} />
-      <PlacesClient place={place} />
+      <PlacesClient place={place} totalProperties={place} />
       <SiteFooter />
     </div>
   );

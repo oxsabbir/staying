@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
 import { FiChevronDown, FiHeart, FiMapPin } from "react-icons/fi";
-
+import { roomData } from "../../../data/room_data";
 const navPill =
-  "rounded-full border border-primary/30 px-3 py-2 text-xs text-primary";
+  "rounded-full border border-primary/30 px-3 py-2 text-xs font-medium text-primary";
 
-const formatPrice = (value) => `BDT ${value.toLocaleString("en-US")}`;
+const formatPrice = (value) => `SAR ${value.toLocaleString("en-US")}`;
 
 function Breadcrumbs({ place }) {
   return (
@@ -128,7 +128,7 @@ function PropertyCard({ property }) {
         <Link href={`/rooms/${property.id}`}>
           <div className="relative">
             <img
-              src={property.image}
+              src={property.image?.[0]}
               alt={property.name}
               className="h-52 w-full rounded-md object-cover sm:h-48 lg:h-44"
             />
@@ -211,9 +211,10 @@ function PropertyCard({ property }) {
 }
 
 export default function PlacesClient({ place }) {
+  const properties = roomData.filter((p) => p.slug === place.slug) || [];
   const prices = useMemo(
-    () => place.properties.map((property) => property.price),
-    [place],
+    () => properties.map((property) => property.price),
+    [properties],
   );
   const priceBounds = useMemo(
     () => ({ min: Math.min(...prices), max: Math.max(...prices) }),
@@ -233,7 +234,7 @@ export default function PlacesClient({ place }) {
   }, [priceBounds.max]);
 
   const filtered = useMemo(() => {
-    const base = place.properties.filter((property) => {
+    const base = properties.filter((property) => {
       if (property.price > maxPrice) return false;
       if (freeCancellation && !property.perks.includes("Free cancellation"))
         return false;
@@ -274,8 +275,7 @@ export default function PlacesClient({ place }) {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <h1 className="text-xl font-semibold">
-                  {place.name}:{" "}
-                  {place.summary.propertiesCount.toLocaleString("en-US")}{" "}
+                  {place.name}: {roomData.length?.toLocaleString("en-US") || 0}{" "}
                   properties found
                 </h1>
                 <div className="mt-2 inline-flex items-center gap-2 text-xs text-muted">
@@ -286,7 +286,7 @@ export default function PlacesClient({ place }) {
                       onChange={(event) => setSortBy(event.target.value)}
                       className="appearance-none rounded-md border border-border bg-white px-3 py-1 pr-7 text-xs"
                     >
-                      <option value="top">Our top picks</option>
+                      <option value="top">Our top picks</option>roomData
                       <option value="price">Price (lowest first)</option>
                       <option value="rating">Rating (high to low)</option>
                     </select>

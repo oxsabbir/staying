@@ -1,3 +1,4 @@
+"use client";
 import {
   FiMapPin,
   FiCalendar,
@@ -8,11 +9,17 @@ import {
   FiHeart,
 } from "react-icons/fi";
 import { roomDetailsData, roomSections } from "../../../data/roomDetails";
+import { GalleryPreview, GalleryModal } from "../../../app/components/gallery";
+import { useParams } from "next/navigation";
+import { useState } from "react";
+import SiteFooter from "../../components/home/SiteFooter";
 
-export default async function RoomDetailsPage({ params }) {
-  const paramsResult = await params;
-
+export default function RoomDetailsPage() {
+  const paramsResult = useParams();
   const room = roomDetailsData[paramsResult.slug];
+
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const [galleryOpen, setGalleryOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-bg text-text">
@@ -93,22 +100,21 @@ export default async function RoomDetailsPage({ params }) {
           </div>
         </section>
 
-        <section className="container grid gap-5 md:grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)]">
-          <div className="grid gap-3">
-            <div
-              className="h-[360px] rounded-sm bg-cover bg-center"
-              style={{ backgroundImage: `url(${room.images[0].src})` }}
-            />
-            <div className="grid grid-cols-4 gap-3 max-[640px]:grid-cols-2">
-              {room.images.slice(1).map((image) => (
-                <div
-                  key={image.src}
-                  className="h-[90px] rounded-sm bg-cover bg-center"
-                  style={{ backgroundImage: `url(${image.src})` }}
-                />
-              ))}
-            </div>
-          </div>
+        <section className="container grid  gap-5 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)]">
+          <GalleryPreview
+            place={room}
+            onOpen={(index) => {
+              setGalleryIndex(index);
+              setGalleryOpen(true);
+            }}
+          />
+          <GalleryModal
+            place={room}
+            isOpen={galleryOpen}
+            startIndex={galleryIndex}
+            onClose={() => setGalleryOpen(false)}
+          />
+
           <aside className="grid gap-4">
             <div className="flex items-center justify-between rounded-sm border border-border bg-bg p-4">
               <div>
@@ -244,6 +250,7 @@ export default async function RoomDetailsPage({ params }) {
           <button className="text-link">See all policies</button>
         </section>
       </main>
+      <SiteFooter />
     </div>
   );
 }

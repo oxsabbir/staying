@@ -1,10 +1,11 @@
 import { places } from "./places";
+import { roomData } from "./room_data";
 
 const generateRoomDetails = () => {
   const allDetails = {};
 
   places.forEach((place) => {
-    place.properties.forEach((prop) => {
+    roomData.forEach((prop) => {
       // Basic data mapping
       const detail = {
         slug: prop.id,
@@ -14,7 +15,7 @@ const generateRoomDetails = () => {
         ratingLabel: prop.ratingLabel,
         reviewCount: prop.reviewCount.toLocaleString(),
         highlight: `A popular ${prop.ratingLabel.toLowerCase()} choice in ${prop.area}.`,
-        images: [{ src: prop.image, alt: `Main view of ${prop.name}` }],
+        images: prop.image,
         overview: prop.description,
         facts: [
           { label: "Best for", value: "City trips, business travelers" },
@@ -62,36 +63,6 @@ const generateRoomDetails = () => {
           "Pets are not allowed",
         ],
       };
-
-      // Special image requirement for the first property
-      if (prop.id === "four-seasons-riyadh") {
-        detail.images = [
-          {
-            src: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=80",
-            alt: "Luxury hotel room with city view",
-          },
-          {
-            src: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80",
-            alt: "Hotel lobby with grand staircase",
-          },
-          {
-            src: "https://images.unsplash.com/photo-1542314831-068cd1dbb5eb?auto=format&fit=crop&w=800&q=80",
-            alt: "Outdoor pool area at night",
-          },
-          {
-            src: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=800&q=80",
-            alt: "Fine dining restaurant setup",
-          },
-          {
-            src: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800&q=80",
-            alt: "Spacious hotel spa and wellness center",
-          },
-          {
-            src: "https://images.unsplash.com/photo-1568495248636-6432b97bd949?auto=format&fit=crop&w=800&q=80",
-            alt: "Hotel exterior against a clear sky",
-          },
-        ];
-      }
 
       allDetails[prop.id] = detail;
     });
