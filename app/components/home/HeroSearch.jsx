@@ -2,7 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FiCalendar, FiMapPin, FiSearch, FiUsers } from "react-icons/fi";
+import {
+  FiCalendar,
+  FiCheck,
+  FiMapPin,
+  FiSearch,
+  FiUsers,
+} from "react-icons/fi";
 import { useSearchContext } from "../../context/SearchContext";
 
 const SAUDI_CITIES = ["Riyadh", "Jeddah", "Mecca", "Medina", "AlUla", "Tabuk"];
@@ -68,7 +74,7 @@ function RoomGuestSelector({ value, onChange, onDone }) {
   );
 }
 
-export default function HeroSearch() {
+export default function HeroSearch({ isReserving }) {
   const [city, setCity] = useState(SAUDI_CITIES[0]);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -80,7 +86,7 @@ export default function HeroSearch() {
   const [travelingWithPets, setTravelingWithPets] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const router = useRouter();
-  const { updateData } = useSearchContext();
+  const { updateData, data } = useSearchContext();
 
   const today = useMemo(() => new Date(), []);
   const calendar = useMemo(() => {
@@ -172,17 +178,41 @@ export default function HeroSearch() {
     router.push(`/places/${citySlug}`);
   };
 
+  const handleReserve = () => {
+    const citySlug = city.toLowerCase().replace(/\s+/g, "-");
+    updateData({
+      city: city,
+      checkIn,
+      checkOut,
+      totalGuest: guests.adults + guests.children,
+      guests: guests,
+    });
+    router.push(`/places/${citySlug}/reserve`);
+  };
+
   return (
-    <section className="bg-primary text-white py-9">
+    <section
+      className={`bg-primary text-white ${isReserving ? "py-4 pb-6" : "py-9"}`}
+    >
       <div className="container">
-        <h1 className="text-[clamp(2rem,3vw,2.8rem)] font-bold">
-          Find your next stay
-        </h1>
-        <p className="mt-3 text-white/85">
-          Search deals on hotels, homes, and much more...
-        </p>
+        {isReserving && (
+          <h1 className="text-[clamp(2rem,3vw,2.8rem)] font-bold">
+            Reserve Your Stay
+          </h1>
+        )}
+        {!isReserving && (
+          <>
+            <h1 className="text-[clamp(2rem,3vw,2.8rem)] font-bold">
+              Find your next stay
+            </h1>
+            <p className="mt-3 text-white/85">
+              Search deals on hotels, homes, and much more...
+            </p>
+          </>
+        )}
+
         <form
-          onSubmit={handleSubmit}
+          onSubmit={isReserving ? handleReserve : handleSubmit}
           className="mt-6 flex flex-col items-center justify-between gap-4 rounded-sm border-4 border-accent bg-white lg:flex-row"
         >
           <div className="relative flex md:w-8/12 w-full items-center gap-2 border-r border-border p-3 text-muted max-[960px]:border-b  max-[960px]:border-r-0">
@@ -359,8 +389,17 @@ export default function HeroSearch() {
             type="submit"
             className="flex md:w-8/12 w-full  py-3 rounded-sm items-center justify-center gap-2 bg-link font-semibold text-white max-[960px]:p-3"
           >
-            <FiSearch />
-            Search
+            {isReserving ? (
+              <>
+                <FiCheck className="text-lg" size={24} />
+                Reserve
+              </>
+            ) : (
+              <>
+                <FiSearch />
+                Search
+              </>
+            )}
           </button>
         </form>
       </div>

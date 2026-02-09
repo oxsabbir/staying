@@ -5,6 +5,7 @@ import { useMemo, useState, useEffect } from "react";
 import { FiChevronDown, FiHeart, FiMapPin } from "react-icons/fi";
 import { roomData } from "../../../data/room_data";
 import { useSearchContext } from "../../context/SearchContext";
+import Wishlist from "../shared/Wishlist";
 const navPill =
   "rounded-full border border-primary/30 px-3 py-2 text-xs font-medium text-primary";
 
@@ -132,9 +133,10 @@ function PropertyCard({ property }) {
               alt={property.name}
               className="h-52 w-full rounded-md object-cover sm:h-48 lg:h-44"
             />
-            <button className="absolute right-2 top-2 rounded-full bg-white/90 p-2 text-primary shadow">
-              <FiHeart />
-            </button>
+
+            {/* <div className="absolute right-2 top-2 rounded-full bg-white shadow">
+              <Wishlist />
+            </div> */}
           </div>
         </Link>
 

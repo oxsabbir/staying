@@ -13,6 +13,8 @@ import { GalleryPreview, GalleryModal } from "../../../app/components/gallery";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import SiteFooter from "../../components/home/SiteFooter";
+import Wishlist from "../../components/shared/Wishlist";
+import { HeroSearch } from "../../components/home";
 
 export default function RoomDetailsPage() {
   const paramsResult = useParams();
@@ -88,13 +90,9 @@ export default function RoomDetailsPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted">
-              <FiShare2 />
-            </button>
-            <button className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted">
-              <FiHeart />
-            </button>
-            <button className="rounded-xs bg-white px-3 py-2 font-semibold text-primary">
+            <Wishlist />
+
+            <button className="rounded-xs text-white bg-primary px-3 py-2 font-semibold text-primary">
               Reserve
             </button>
           </div>
@@ -138,8 +136,8 @@ export default function RoomDetailsPage() {
                   </div>
                 ))}
               </div>
-              <button className="rounded-xs bg-white px-3 py-2 font-semibold text-primary">
-                Reserve
+              <button className="rounded-xs bg-primary px-3 hover:opacity-90 duration-200 py-2 font-semibold text-white">
+                I Will Reserve
               </button>
             </div>
             <div className="grid gap-3 rounded-sm border border-border bg-bg p-4">
@@ -183,7 +181,7 @@ export default function RoomDetailsPage() {
                 Prices for {room.availability.checkIn}
               </span>
             </div>
-            <div className="mb-4 grid grid-cols-[repeat(3,minmax(0,1fr))_auto] gap-3 rounded-sm border-2 border-accent bg-white p-3 max-[960px]:grid-cols-1">
+            {/* <div className="mb-4 grid grid-cols-[repeat(3,minmax(0,1fr))_auto] gap-3 rounded-sm border-2 border-accent bg-white p-3 max-[960px]:grid-cols-1">
               <div className="grid gap-1 text-muted">
                 <strong className="text-text">
                   {room.availability.checkIn}
@@ -205,7 +203,8 @@ export default function RoomDetailsPage() {
               <button className="rounded-xs bg-white px-3 py-2 font-semibold text-primary">
                 Search
               </button>
-            </div>
+            </div> */}
+            <HeroSearch isReserving={true} />
             <div className="grid gap-3">
               {room.availability.rooms.map((item) => (
                 <div
