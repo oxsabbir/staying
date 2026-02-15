@@ -201,7 +201,7 @@ Room URL: ${roomUrl || window.location.href}
 \nThank you!`;
 
     const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/966545759715?text=${encodedMessage}`, "_blank");
+    window.open(`https://wa.me/966576033238?text=${encodedMessage}`, "_blank");
   };
 
   return (

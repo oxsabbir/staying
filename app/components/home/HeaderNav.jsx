@@ -2,9 +2,30 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { BiMenu } from "react-icons/bi";
+import { BiEdit, BiMenu } from "react-icons/bi";
+import {
+  FaCar,
+  FaHotel,
+  FaMapMarkedAlt,
+  FaPlane,
+  FaSuitcaseRolling,
+  FaTaxi,
+} from "react-icons/fa";
 
-export default function HeaderNav({ navLinks }) {
+const navLinks = [
+  { title: "Stays", link: "/stays", icon: <FaHotel /> },
+  { title: "Flights", link: "/flights", icon: <FaPlane /> },
+  {
+    title: "Flight + Hotel",
+    link: "/flight-hotel",
+    icon: <FaSuitcaseRolling />,
+  },
+  { title: "Car rentals", link: "/cars", icon: <FaCar /> },
+  { title: "Attractions", link: "/attractions", icon: <FaMapMarkedAlt /> },
+  { title: "Airport taxis", link: "/airport-taxis", icon: <FaTaxi /> },
+];
+
+export default function HeaderNav() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -37,13 +58,14 @@ export default function HeaderNav({ navLinks }) {
         </button>
       </div>
 
-      <div className="container hidden flex-wrap gap-2 pb-3 md:flex">
+      <div className="container hidden  flex-wrap gap-2 pb-3 md:flex">
         {navLinks.map((item) => (
           <button
             key={item}
-            className="rounded-full border border-white/30 px-3 py-2 text-sm text-white"
+            className="rounded-full border flex gap-3  items-center border-white/30 px-4 py-2 text-sm text-white"
           >
             {item}
+            <BiEdit size={24} />
           </button>
         ))}
       </div>

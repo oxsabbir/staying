@@ -1,3 +1,31 @@
+import customerSupport from "../public/images/CustomerSupport.png";
+import freeCancellation from "../public/images/FreeCancellation.png";
+import reviews from "../public/images/Reviews.png";
+import tripsGlobe from "../public/images/TripsGlobe.png";
+
+const whyCards = [
+  {
+    title: "Book now, pay at the property",
+    body: "FREE cancellation on most rooms",
+    image: freeCancellation,
+  },
+  {
+    title: "300M+ reviews from fellow travelers",
+    body: "Get trusted information from guests like you",
+    image: reviews,
+  },
+  {
+    title: "2+ million properties worldwide",
+    body: "Hotels, guest houses, apartments, and more",
+    image: tripsGlobe,
+  },
+  {
+    title: "Trusted 24/7 customer service",
+    body: "We're always here to help",
+    image: customerSupport,
+  },
+];
+
 export default function WhyBooking({ cards }) {
   return (
     <section className="py-8">

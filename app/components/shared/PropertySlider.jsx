@@ -11,7 +11,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 export default function PropertySlider({ items }) {
-  console.log(items);
   return (
     <div className="relative">
       <button

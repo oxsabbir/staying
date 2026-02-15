@@ -14,42 +14,6 @@ import {
   PopularSaudiDestinations,
   SiteFooter,
 } from "./components/home";
-import customerSupport from "../public/images/CustomerSupport.png";
-import freeCancellation from "../public/images/FreeCancellation.png";
-import reviews from "../public/images/Reviews.png";
-import tripsGlobe from "../public/images/TripsGlobe.png";
-
-const navLinks = [
-  "Stays",
-  "Flights",
-  "Flight + Hotel",
-  "Car rentals",
-  "Attractions",
-  "Airport taxis",
-];
-
-const whyCards = [
-  {
-    title: "Book now, pay at the property",
-    body: "FREE cancellation on most rooms",
-    image: freeCancellation,
-  },
-  {
-    title: "300M+ reviews from fellow travelers",
-    body: "Get trusted information from guests like you",
-    image: reviews,
-  },
-  {
-    title: "2+ million properties worldwide",
-    body: "Hotels, guest houses, apartments, and more",
-    image: tripsGlobe,
-  },
-  {
-    title: "Trusted 24/7 customer service",
-    body: "We're always here to help",
-    image: customerSupport,
-  },
-];
 
 const propertyCards = [
   {
@@ -63,17 +27,6 @@ const propertyCards = [
     city: "Kathmandu",
     image:
       "https://images.unsplash.com/photo-1470167290877-7d5d3446de4c?auto=format&fit=crop&w=800&q=80",
-  },
-];
-
-const offers = [
-  {
-    title: "Find your next stay",
-    body: "Search deals on hotels, homes, and much more...",
-  },
-  {
-    title: "Get instant discounts",
-    body: "Sign in to unlock Genius and member-only savings.",
   },
 ];
 
@@ -173,15 +126,15 @@ const homes = [
 export default function Home() {
   return (
     <div className="min-h-screen bg-bg text-text">
-      <HeaderNav navLinks={navLinks} />
+      <HeaderNav />
       <HeroSearch />
-      <WhyBooking cards={whyCards} />
-      <PropertyHighlights items={propertyCards} />
+      <WhyBooking />
+      <PropertyHighlights />
       <OffersSection offers={offers} />
       <TrendingDestinations />
-      <UniqueProperties items={uniqueProps} />
-      <DealsWeekend items={deals} />
-      <HomesGuestsLove items={homes} />
+      <UniqueProperties />
+      <DealsWeekend />
+      <HomesGuestsLove />
       <NewsletterCTA />
       <TravelMore />
       <PopularSaudiDestinations />

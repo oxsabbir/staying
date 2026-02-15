@@ -10,10 +10,10 @@ export default function TravelMore() {
         </div>
         <div className="flex gap-2">
           <button className="rounded-xs bg-white px-3 py-2 text-sm font-semibold text-primary">
-            Sign in
+            Call Us
           </button>
           <button className="rounded-xs border border-primary px-3 py-2 text-sm font-semibold text-primary">
-            Register
+            Book Now
           </button>
         </div>
       </div>

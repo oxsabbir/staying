@@ -29,7 +29,7 @@ export default function RoomDetailsPage() {
     <div className="min-h-screen bg-bg text-text">
       <header className="bg-primary text-white pt-4 pb-3">
         <div className="container flex items-center justify-between gap-5 pb-3">
-          <div className="text-xl font-bold">Booking.com</div>
+          <div className="text-xl font-bold">Staying.com</div>
           <div className="flex flex-wrap items-center gap-2">
             <button className="rounded-xs border border-transparent px-3 py-2 text-white">
               BDT
