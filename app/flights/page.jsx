@@ -14,7 +14,7 @@ export default function FlightsPage() {
   const [form, setForm] = useState({
     tripType: "Round-trip",
     from: "",
-    to: "Jeddah, Saudi Arabia",
+    to: "",
     departureDate: "",
     returnDate: "",
     travelers: {
@@ -70,9 +70,18 @@ export default function FlightsPage() {
         <section className="rounded-xl bg-[#dfe2e7]">
           <div className="">
             <div className="p-5 sm:p-8 lg:p-4 lg:py-8">
-              <h1 className="max-w-[760px] text-3xl font-bold leading-tight sm:text-5xl">
-                Search Hajj-friendly flight options in one place.
-              </h1>
+              <div className=" flex items-center justify-between">
+                <h1 className="max-w-[760px] text-3xl font-bold  sm:text-5xl ">
+                  Find Hajj-friendly flight options in one place.
+                </h1>
+                <div className="hidden lg:block">
+                  <img
+                    src="/images/hajj.png"
+                    alt="flight"
+                    className="h-[200px]"
+                  />
+                </div>
+              </div>
 
               <form onSubmit={handleSubmit} className="mt-8">
                 <label className="text-sm font-medium text-text/80">
@@ -88,7 +97,7 @@ export default function FlightsPage() {
                 </select>
 
                 <div className="mt-4  rounded-lg border flex border-border bg-white p-2 shadow-sm">
-                  <div className="grid gap-2 gap-y-5 xl:gap-y-2  items-center  w-full  xl:grid-cols-[1.35fr_auto_1.35fr_1fr_1fr_1fr_auto]">
+                  <div className="grid gap-2 gap-y-5 xl:gap-y-2  items-center  w-full  xl:grid-cols-[2fr_2fr_1.5fr_1.5fr_1.5fr]">
                     <div className="rounded-md border border-border px-3 py-2 xl:border-0 xl:border-r xl:rounded-none">
                       <AutocompleteInput
                         placeholder="Flying from"
@@ -99,10 +108,6 @@ export default function FlightsPage() {
                         emptyText="No locations found."
                         inputClassName="text-sm"
                       />
-                    </div>
-
-                    <div className="hidden items-center justify-center text-muted xl:flex">
-                      <FiRepeat />
                     </div>
 
                     <div className="rounded-md border border-border px-3 py-2 xl:border-0 xl:border-r xl:rounded-none">
@@ -153,7 +158,7 @@ export default function FlightsPage() {
                       className={`rounded-md px-5 py-3 text-sm font-semibold text-white xl:min-w-[170px] ${
                         isFormValid
                           ? "bg-link hover:bg-[#005dc1]"
-                          : "cursor-not-allowed bg-[#9aa6b2]"
+                          : "cursor-not-allowed bg-blue-600/80"
                       }`}
                     >
                       Book on WhatsApp

@@ -7,7 +7,7 @@ export { default as TrendingDestinations } from "./TrendingDestinations";
 export { default as UniqueProperties } from "./UniqueProperties";
 export { default as DealsWeekend } from "./DealsWeekend";
 export { default as HomesGuestsLove } from "./HomesGuestsLove";
-export { default as NewsletterCTA } from "./NewsletterCTA";
+export { default as BookingCTA } from "./BookingCTA";
 export { default as TravelMore } from "./TravelMore";
 export { default as PopularSaudiDestinations } from "./PopularSaudiDestinations";
 export { default as SiteFooter } from "./SiteFooter";

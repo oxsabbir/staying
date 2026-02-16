@@ -502,7 +502,9 @@ export default function AirportTaxisPage() {
           ))}
         </section>
         <section className="container pt-[400px] md:pt-[300px] xl:pt-10">
-          <h2 className="text-4xl font-bold">Travel more, spend less</h2>
+          <h2 className="text-3xl md:text-4xl font-bold">
+            Travel more, spend less
+          </h2>
           <div className="mt-4 flex flex-col items-start justify-between gap-4 rounded-lg border border-border bg-white p-5 md:flex-row md:items-center">
             <div>
               <h3 className="text-xl font-semibold">Book Now, save money</h3>
@@ -510,18 +512,17 @@ export default function AirportTaxisPage() {
                 Save 10% on select rental cars with partner offers
               </p>
               <div className="mt-3 flex gap-3">
-                <button className="rounded-sm bg-link px-4 py-2 text-sm font-semibold text-white">
-                  Call Us
-                </button>
-                <button className="rounded-sm border border-border px-4 py-2 text-sm font-semibold text-link">
-                  Learn More
-                </button>
+                <a href={`tel:${process.env.NEXT_PUBLIC_PHONE_NUMBER || "00"}`}>
+                  <button className="rounded-sm bg-link px-4 py-2 text-sm font-semibold text-white">
+                    Call Us
+                  </button>
+                </a>
+                <a href="/about-us">
+                  <button className="rounded-sm border border-border px-4 py-2 text-sm font-semibold text-link">
+                    Learn More
+                  </button>
+                </a>
               </div>
-            </div>
-            <div className="rounded-lg bg-[#eef5ff] p-3">
-              <span className="inline-block rounded-md bg-link px-3 py-2 text-sm font-bold text-white">
-                Genius
-              </span>
             </div>
           </div>
         </section>

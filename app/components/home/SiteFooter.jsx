@@ -1,89 +1,73 @@
+import Link from "next/link";
+
+const serviceLinks = [
+  { label: "Stays", href: "/" },
+  { label: "Flights", href: "/flights" },
+  { label: "Car rentals", href: "/cars" },
+  { label: "Airport taxis", href: "/airport-taxis" },
+];
+
+const companyLinks = [{ label: "About Staying.com", href: "/about" }];
+
 export default function SiteFooter() {
+  const year = new Date().getFullYear();
+
   return (
-    <footer className="border-t border-border py-8 text-sm text-muted">
-      <div className="container grid gap-5 md:grid-cols-3 lg:grid-cols-5">
+    <footer className="mt-12 border-t border-border bg-white">
+      <div className="container grid gap-8 py-10 md:grid-cols-[1.3fr_1fr_1fr]">
         <div>
-          <h4 className="mb-2 font-semibold text-text">Support</h4>
-          <a className="mb-2 block" href="#">
-            Coronavirus (COVID-19) FAQs
-          </a>
-          <a className="mb-2 block" href="#">
-            Manage your trips
-          </a>
-          <a className="mb-2 block" href="#">
-            Contact Customer Service
-          </a>
-          <a className="mb-2 block" href="#">
-            Safety Resource Center
-          </a>
+          <h3 className="text-xl font-bold text-text">Staying.com</h3>
+          <p className="mt-3 max-w-md text-sm leading-6 text-muted">
+            Simple travel booking for stays, flights, car rentals, and airport
+            taxis with quick support when you need it.
+          </p>
         </div>
+
         <div>
-          <h4 className="mb-2 font-semibold text-text">Discover</h4>
-          <a className="mb-2 block" href="#">
-            Genius loyalty program
-          </a>
-          <a className="mb-2 block" href="#">
-            Seasonal and holiday deals
-          </a>
-          <a className="mb-2 block" href="#">
-            Travel articles
-          </a>
-          <a className="mb-2 block" href="#">
-            Booking.com for Business
-          </a>
+          <h4 className="text-sm font-semibold uppercase tracking-wide text-text">
+            Services
+          </h4>
+          <div className="mt-3 grid gap-2 text-sm">
+            {serviceLinks.map((item) => (
+              <Link key={item.href} href={item.href} className="text-muted hover:text-link">
+                {item.label}
+              </Link>
+            ))}
+          </div>
         </div>
+
         <div>
-          <h4 className="mb-2 font-semibold text-text">Terms and settings</h4>
-          <a className="mb-2 block" href="#">
-            Privacy & cookies
-          </a>
-          <a className="mb-2 block" href="#">
-            Terms and conditions
-          </a>
-          <a className="mb-2 block" href="#">
-            Partner dispute
-          </a>
-          <a className="mb-2 block" href="#">
-            Modern Slavery Statement
-          </a>
-        </div>
-        <div>
-          <h4 className="mb-2 font-semibold text-text">Partners</h4>
-          <a className="mb-2 block" href="#">
-            Extranet login
-          </a>
-          <a className="mb-2 block" href="#">
-            Partner help
-          </a>
-          <a className="mb-2 block" href="#">
-            List your property
-          </a>
-          <a className="mb-2 block" href="#">
-            Become an affiliate
-          </a>
-        </div>
-        <div>
-          <h4 className="mb-2 font-semibold text-text">About</h4>
-          <a className="mb-2 block" href="#">
-            About Booking.com
-          </a>
-          <a className="mb-2 block" href="#">
-            How we work
-          </a>
-          <a className="mb-2 block" href="#">
-            Sustainability
-          </a>
-          <a className="mb-2 block" href="#">
-            Investor relations
-          </a>
+          <h4 className="text-sm font-semibold uppercase tracking-wide text-text">
+            Company
+          </h4>
+          <div className="mt-3 grid gap-2 text-sm">
+            {companyLinks.map((item) => (
+              <Link key={item.href} href={item.href} className="text-muted hover:text-link">
+                {item.label}
+              </Link>
+            ))}
+            <a
+              href="https://wa.me/966576033238"
+              target="_blank"
+              rel="noreferrer"
+              className="text-muted hover:text-link"
+            >
+              WhatsApp Support
+            </a>
+            <a href="mailto:support@staying.com" className="text-muted hover:text-link">
+              support@staying.com
+            </a>
+            <a href="tel:+966576033238" className="text-muted hover:text-link">
+              +966 57 603 3238
+            </a>
+          </div>
         </div>
       </div>
-      <div className="container mt-6 flex flex-col gap-2">
-        <span>
-          Staying.com is part of Staying Holdings Inc., the world leader in
-          online travel and related services.
-        </span>
-        <span>Copyright © 2026 Staying.com</span>
+
+      <div className="border-t border-border/80">
+        <div className="container py-4 text-xs text-muted">
+          © {year} Staying.com. All rights reserved.
+        </div>
       </div>
     </footer>
   );

@@ -223,7 +223,7 @@ export default function HeroSearch({
     <section
       className={`bg-primary  text-white ${isReserving ? "py-4 pb-6" : "py-9"}`}
     >
-      <div className="container relative ">
+      <div id="hero-search" className="container relative ">
         {isReserving && (
           <h1 className="text-[clamp(2rem,3vw,2.8rem)] font-bold">
             Reserve Your Stay

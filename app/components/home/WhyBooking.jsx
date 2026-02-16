@@ -30,7 +30,7 @@ export default function WhyBooking() {
   return (
     <section className="py-8 pt-[250px] xl:pt-16">
       <div className="container">
-        <h2 className="mb-4 text-[1.35rem] font-semibold">Why Booking.com?</h2>
+        <h2 className="mb-4 text-[1.35rem] font-semibold">Why Staying.com?</h2>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {cards.map((card) => (
             <div

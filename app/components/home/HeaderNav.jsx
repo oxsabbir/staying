@@ -26,6 +26,12 @@ const mobileMenuLinks = [
 export default function HeaderNav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const isStaysRoute =
+    pathname === "/" ||
+    pathname === "/rooms" ||
+    pathname.startsWith("/rooms/") ||
+    pathname === "/places" ||
+    pathname.startsWith("/places/");
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -44,13 +50,30 @@ export default function HeaderNav() {
         </Link>
 
         <div className="hidden flex-wrap items-center gap-2 md:flex">
-          <button className="rounded-xs border border-transparent px-3 py-2 text-white">
-            List your property
-          </button>
-          <button className="rounded-xs border border-white px-3 py-2 text-white">
-            Contact
-          </button>
-          <button className="rounded-xs bg-white px-3 py-2 font-semibold text-primary">
+          <a href="/about">
+            <button className="rounded-xs border border-transparent px-3 py-2 text-white">
+              About
+            </button>
+          </a>
+          <a href="/contact">
+            <button className="rounded-xs border border-white px-3 py-2 text-white">
+              Contact
+            </button>
+          </a>
+          <button
+            onClick={
+              isStaysRoute
+                ? () => {
+                    document
+                      .getElementById("hero-search")
+                      .scrollIntoView({ behavior: "smooth" });
+                  }
+                : () => {
+                    window.location.href = "/#hero-search";
+                  }
+            }
+            className="rounded-xs bg-white px-3 py-2 font-semibold text-primary"
+          >
             Book Now
           </button>
         </div>
@@ -72,8 +95,7 @@ export default function HeaderNav() {
             <Link href={item.link} key={item.link}>
               <div
                 className={`rounded-full border flex gap-3 whitespace-nowrap  items-center px-4 py-2 text-sm text-white ${
-                  pathname === item.link ||
-                  (item.link === "/" && pathname === "/")
+                  pathname === item.link || (item.link === "/" && isStaysRoute)
                     ? "border-white"
                     : "border-transparent"
                 }`}
@@ -88,7 +110,9 @@ export default function HeaderNav() {
 
       <div
         className={`fixed inset-0 z-50 md:hidden transition-opacity duration-200 ${
-          menuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+          menuOpen
+            ? "pointer-events-auto opacity-100"
+            : "pointer-events-none opacity-0"
         }`}
       >
         <button

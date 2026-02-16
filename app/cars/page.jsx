@@ -220,18 +220,17 @@ export default function CarRentalPage() {
                 Save 10% on select rental cars with partner offers
               </p>
               <div className="mt-3 flex gap-3">
-                <button className="rounded-sm bg-link px-4 py-2 text-sm font-semibold text-white">
-                  Call Us
-                </button>
-                <button className="rounded-sm border border-border px-4 py-2 text-sm font-semibold text-link">
-                  Learn More
-                </button>
+                <a href={`tel:${process.env.NEXT_PUBLIC_PHONE_NUMBER || "00"}`}>
+                  <button className="rounded-sm bg-link px-4 py-2 text-sm font-semibold text-white">
+                    Call Us
+                  </button>
+                </a>
+                <a href="/about-us">
+                  <button className="rounded-sm border border-border px-4 py-2 text-sm font-semibold text-link">
+                    Learn More
+                  </button>
+                </a>
               </div>
-            </div>
-            <div className="rounded-lg bg-[#eef5ff] p-3">
-              <span className="inline-block rounded-md bg-link px-3 py-2 text-sm font-bold text-white">
-                Genius
-              </span>
             </div>
           </div>
         </section>

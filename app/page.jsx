@@ -9,11 +9,17 @@ import {
   UniqueProperties,
   DealsWeekend,
   HomesGuestsLove,
-  NewsletterCTA,
+  BookingCTA,
   TravelMore,
   PopularSaudiDestinations,
   SiteFooter,
 } from "./components/home";
+
+export const metadata = {
+  title: "Find Your Next Stay",
+  description:
+    "Discover top stays, travel deals, and trusted booking options across Saudi Arabia with Staying.com.",
+};
 
 export default function Home() {
   return (
@@ -27,7 +33,7 @@ export default function Home() {
       <UniqueProperties />
       <DealsWeekend />
       <HomesGuestsLove />
-      <NewsletterCTA />
+      <BookingCTA />
       <TravelMore />
       <PopularSaudiDestinations />
       <SiteFooter />
