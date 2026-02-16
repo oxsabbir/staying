@@ -97,7 +97,7 @@ export function DateRangeDropdown({
         className="flex w-full items-center justify-between gap-2 text-left"
       >
         <span className="flex min-w-0 items-center gap-2">
-          <FiCalendar className="shrink-0 text-muted" />
+          <FiCalendar className="shrink-0 text-muted" size={20} />
           <span className="truncate text-sm text-text">{label}</span>
         </span>
         <span className="text-xs text-muted">▾</span>
