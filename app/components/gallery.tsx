@@ -7,22 +7,7 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import { useEffect, useState } from "react";
 
-//    <GalleryPreview
-//         place={place}
-//         onOpen={(index) => {
-//           setGalleryIndex(index);
-//           setGalleryOpen(true);
-//         }}
-//       />
-//       <GalleryModal
-//         place={place}
-//         isOpen={galleryOpen}
-//         startIndex={galleryIndex}
-//         onClose={() => setGalleryOpen(false)}
-//       />
-
 export function GalleryPreview({ place, onOpen }) {
-  console.log(place);
   return (
     <section className="rounded-lg border border-border bg-white p-4 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
