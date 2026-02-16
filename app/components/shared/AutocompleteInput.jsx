@@ -25,6 +25,7 @@ export default function AutocompleteInput({
   onChange,
   filterCountryCode = 'sa',
   emptyText,
+  required = false,
 }) {
   const [internalValue, setInternalValue] = useState('');
   const [open, setOpen] = useState(false);
@@ -149,6 +150,7 @@ export default function AutocompleteInput({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           className={`w-full text-base outline-none ${inputClassName}`}
+          required={required}
           role="combobox"
           aria-expanded={open}
           aria-controls={listId}
