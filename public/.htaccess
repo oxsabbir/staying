@@ -1,0 +1,25 @@
+DirectoryIndex index.html
+Options -MultiViews
+
+RewriteEngine On
+
+# Canonical host and HTTPS
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} ^www\.stayings\.com$ [NC]
+RewriteRule ^ https://stayings.com%{REQUEST_URI} [L,R=301]
+
+# Skip rewrite for real files/folders
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Canonical trailing slash for clean URLs
+RewriteCond %{REQUEST_URI} !\.[a-zA-Z0-9]{1,6}$
+RewriteCond %{REQUEST_URI} !/$
+RewriteRule ^(.+)$ /$1/ [L,R=301]
+
+# Serve exported page routes
+RewriteRule ^(.+)/$ /$1/index.html [L]
+
+# Keep custom 404 page
+ErrorDocument 404 /404.html
