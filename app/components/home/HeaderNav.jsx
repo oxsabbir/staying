@@ -13,19 +13,15 @@ import {
   FaSuitcaseRolling,
   FaTaxi,
 } from "react-icons/fa";
-import { IoBedOutline } from "react-icons/io5";
+import { IoAirplaneOutline, IoBedOutline, IoCarOutline } from "react-icons/io5";
+import { PiTaxi } from "react-icons/pi";
 
 const navLinks = [
   { title: "Stays", link: "/", icon: IoBedOutline },
-  { title: "Flights", link: "/flights", icon: FaPlane },
-  {
-    title: "Flight + Hotel",
-    link: "/flight-hotel",
-    icon: FaSuitcaseRolling,
-  },
-  { title: "Car rentals", link: "/cars", icon: FaCar },
-  { title: "Attractions", link: "/attractions", icon: FaMapMarkedAlt },
-  { title: "Airport taxis", link: "/airport-taxis", icon: FaTaxi },
+  { title: "Flights", link: "/flights", icon: IoAirplaneOutline },
+
+  { title: "Car rentals", link: "/cars", icon: IoCarOutline },
+  { title: "Airport taxis", link: "/airport-taxis", icon: PiTaxi },
 ];
 
 export default function HeaderNav() {
