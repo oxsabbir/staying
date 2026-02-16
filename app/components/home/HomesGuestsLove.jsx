@@ -3,7 +3,7 @@ import { roomData } from "../../../data/room_data";
 import PropertySlider from "../shared/PropertySlider";
 
 export default function HomesGuestsLove() {
-  const properties = roomData.slice(3, 11);
+  const properties = roomData.slice(12, 18);
   return (
     <section className="py-8">
       <div className="container">

@@ -3,7 +3,7 @@ import PropertySlider from "../shared/PropertySlider";
 import { roomData } from "../../../data/room_data";
 
 export default function DealsWeekend() {
-  const properties = roomData.slice(5, 13);
+  const properties = roomData.slice(7, 12);
   return (
     <section className="py-8">
       <div className="container">
