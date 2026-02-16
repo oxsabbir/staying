@@ -74,7 +74,14 @@ function RoomGuestSelector({ value, onChange, onDone }) {
   );
 }
 
-export default function HeroSearch({ isReserving, roomName, roomUrl }) {
+export default function HeroSearch({
+  isReserving,
+  roomName,
+  roomUrl,
+  fixedCity,
+  hideLocationField = false,
+  defaultOneNight = false,
+}) {
   const [city, setCity] = useState(SAUDI_CITIES[0]);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -91,12 +98,27 @@ export default function HeroSearch({ isReserving, roomName, roomUrl }) {
   // Add useEffect to pre-fill form fields when isReserving is true and data is available
   useEffect(() => {
     if (isReserving && data) {
-      setCity(data.city || SAUDI_CITIES[0]);
-      setCheckIn(data.checkIn || "");
-      setCheckOut(data.checkOut || "");
+      const todayDate = new Date();
+      todayDate.setHours(0, 0, 0, 0);
+      const tomorrowDate = new Date(todayDate);
+      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+      const formatIso = (date) => {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const d = String(date.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
+      };
+
+      setCity(fixedCity || data.city || SAUDI_CITIES[0]);
+      setCheckIn(
+        data.checkIn || (defaultOneNight ? formatIso(todayDate) : ""),
+      );
+      setCheckOut(
+        data.checkOut || (defaultOneNight ? formatIso(tomorrowDate) : ""),
+      );
       setGuests(data.guests || { adults: 2, children: 0, rooms: 1 });
     }
-  }, [isReserving, data]);
+  }, [isReserving, data, fixedCity, defaultOneNight]);
 
   const today = useMemo(() => new Date(), []);
   const calendar = useMemo(() => {
@@ -188,20 +210,15 @@ export default function HeroSearch({ isReserving, roomName, roomUrl }) {
     router.push(`/places/${citySlug}`);
   };
 
-  const handleReserve = () => {
-    // Construct the WhatsApp message
-    const message = `Hello, I would like to reserve the following:\n
-Room: ${roomName || "Selected Room"}
-Check-in: ${checkIn}
-Check-out: ${checkOut}
-Adults: ${guests.adults}
-Children: ${guests.children}
-Rooms: ${guests.rooms}
-Room URL: ${roomUrl || window.location.href}
-\nThank you!`;
-
-    const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/966576033238?text=${encodedMessage}`, "_blank");
+  const handleApplyChange = (event) => {
+    event.preventDefault();
+    updateData({
+      city,
+      checkIn,
+      checkOut,
+      totalGuest: guests.adults + guests.children,
+      guests,
+    });
   };
 
   return (
@@ -226,54 +243,62 @@ Room URL: ${roomUrl || window.location.href}
         )}
 
         <form
-          onSubmit={isReserving ? handleReserve : handleSubmit}
+          onSubmit={isReserving ? handleApplyChange : handleSubmit}
           className="mt-6 flex flex-col items-center justify-between gap-4 rounded-sm border-4 border-accent bg-white lg:flex-row"
         >
-          <div className="relative flex md:w-8/12 w-full items-center gap-2 border-r border-border p-3 text-muted max-[960px]:border-b  max-[960px]:border-r-0">
-            <FiMapPin />
-            <button
-              type="button"
-              onClick={() =>
-                setOpenDropdown((current) =>
-                  current === "city" ? null : "city",
-                )
-              }
-              className="flex w-full items-center justify-between text-left text-text"
-            >
-              <span>{city}</span>
-              <span className="text-xs text-muted">▾</span>
-            </button>
-            {openDropdown === "city" && (
-              <div className="absolute left-3 top-full z-20 mt-3 w-[280px] max-h-[400px] overflow-auto rounded-md border border-border bg-white p-3 text-text shadow-lg">
-                <p className="text-xs font-semibold uppercase text-muted">
-                  Trending destinations
-                </p>
-                <div className="mt-2 rounded-sm border border-border">
-                  {SAUDI_CITIES.map((item, index) => (
-                    <button
-                      key={item}
-                      type="button"
-                      className={`flex w-full items-center gap-2 px-2 py-2 text-left text-sm ${
-                        index !== SAUDI_CITIES.length - 1
-                          ? "border-b border-border"
-                          : ""
-                      }`}
-                      onClick={() => {
-                        setCity(item);
-                        setOpenDropdown(null);
-                      }}
-                    >
-                      <FiMapPin className="text-muted" />
-                      <div>
-                        <p className="font-semibold">{item}</p>
-                        <p className="text-xs text-muted">Saudi Arabia</p>
+          {!hideLocationField ? (
+            <div className="relative flex md:w-8/12 w-full items-center gap-2 border-r border-border p-3 text-muted max-[960px]:border-b  max-[960px]:border-r-0">
+              <FiMapPin />
+              {isReserving ? (
+                <div className="w-full text-text">{city}</div>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setOpenDropdown((current) =>
+                        current === "city" ? null : "city",
+                      )
+                    }
+                    className="flex w-full items-center justify-between text-left text-text"
+                  >
+                    <span>{city}</span>
+                    <span className="text-xs text-muted">▾</span>
+                  </button>
+                  {openDropdown === "city" && (
+                    <div className="absolute left-3 top-full z-20 mt-3 w-[280px] max-h-[400px] overflow-auto rounded-md border border-border bg-white p-3 text-text shadow-lg">
+                      <p className="text-xs font-semibold uppercase text-muted">
+                        Trending destinations
+                      </p>
+                      <div className="mt-2 rounded-sm border border-border">
+                        {SAUDI_CITIES.map((item, index) => (
+                          <button
+                            key={item}
+                            type="button"
+                            className={`flex w-full items-center gap-2 px-2 py-2 text-left text-sm ${
+                              index !== SAUDI_CITIES.length - 1
+                                ? "border-b border-border"
+                                : ""
+                            }`}
+                            onClick={() => {
+                              setCity(item);
+                              setOpenDropdown(null);
+                            }}
+                          >
+                            <FiMapPin className="text-muted" />
+                            <div>
+                              <p className="font-semibold">{item}</p>
+                              <p className="text-xs text-muted">Saudi Arabia</p>
+                            </div>
+                          </button>
+                        ))}
                       </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          ) : null}
           <div className="relative w-full  flex items-center gap-2 border-r border-border p-3 text-muted max-[960px]:border-b max-[960px]:border-r-0">
             <FiCalendar />
             <button
@@ -406,7 +431,7 @@ Room URL: ${roomUrl || window.location.href}
             {isReserving ? (
               <>
                 <FiCheck className="text-lg" size={24} />
-                Reserve
+                Apply change
               </>
             ) : (
               <>

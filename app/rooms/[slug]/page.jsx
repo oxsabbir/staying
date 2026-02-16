@@ -23,7 +23,55 @@ export default function RoomDetailsPage() {
 
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [galleryOpen, setGalleryOpen] = useState(false);
-  const { updateData } = useSearchContext();
+  const { updateData, data } = useSearchContext();
+  const whatsappNumber =
+    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "966576033238";
+
+  const selectedRooms = Math.max(1, data?.guests?.rooms || 1);
+  const selectedAdults = data?.guests?.adults || 2;
+  const selectedChildren = data?.guests?.children || 0;
+
+  const getNights = () => {
+    if (!data?.checkIn || !data?.checkOut) return 1;
+    const start = new Date(data.checkIn);
+    const end = new Date(data.checkOut);
+    const diffMs = end - start;
+    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+    return Math.max(1, Number.isFinite(diffDays) ? diffDays : 1);
+  };
+
+  const selectedNights = getNights();
+
+  const calculateTotalPrice = (multiplier = 1) => {
+    const basePrice = room.basePrice || 0;
+    return Math.round(basePrice * multiplier * selectedNights * selectedRooms);
+  };
+
+  const handleRoomReserve = (item) => {
+    const total = calculateTotalPrice(item.priceMultiplier || 1);
+    const message = [
+      "Assalamu Alaikum, I would like to reserve this room.",
+      "",
+      `Property: ${room.name}`,
+      `Room type: ${item.type}`,
+      `Check-in: ${data?.checkIn || room.availability.checkIn}`,
+      `Check-out: ${data?.checkOut || room.availability.checkOut}`,
+      `Nights: ${selectedNights}`,
+      `Adults: ${selectedAdults}`,
+      `Children: ${selectedChildren}`,
+      `Rooms: ${selectedRooms}`,
+      `Total price: SAR ${total.toLocaleString()}`,
+      `Room URL: ${window.location.href}`,
+      "",
+      "Please confirm availability and booking steps.",
+    ].join("\n");
+
+    window.open(
+      `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
+  };
 
   return (
     <div className="min-h-screen bg-bg text-text">
@@ -183,16 +231,57 @@ export default function RoomDetailsPage() {
         </section>
 
         <section className="container py-6">
-          <div>
+          <div className="rounded-sm border border-border bg-bg p-5 md:p-6">
             <h2 className="text-[1.3rem] font-semibold">Property overview</h2>
-            <p className="mt-3 text-muted">{room.overview}</p>
-            <div className="mt-4 grid gap-3 md:grid-cols-2">
-              {room.amenities.map((item) => (
-                <div key={item} className="flex items-center gap-2 text-muted">
-                  <FiCheckCircle />
-                  <span>{item}</span>
+
+            <div className="mt-4 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
+              <div>
+                <p className="text-muted">{room.overview}</p>
+                <p className="mt-3 text-sm text-muted">{room.highlight}</p>
+
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  {room.facts.map((fact) => (
+                    <div
+                      key={fact.label}
+                      className="rounded-sm border border-border bg-white p-3"
+                    >
+                      <p className="text-xs uppercase tracking-wide text-muted">
+                        {fact.label}
+                      </p>
+                      <p className="mt-1 font-semibold text-text">{fact.value}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+
+              <div className="rounded-sm border border-border bg-white p-4">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-muted">
+                  Good to know
+                </h3>
+                <ul className="mt-3 grid gap-2 text-sm text-muted">
+                  {room.finePrint.slice(0, 4).map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <FiCheckCircle className="mt-0.5 shrink-0 text-link" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <h3 className="text-base font-semibold">Most popular facilities</h3>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {room.amenities.map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-center gap-2 rounded-sm border border-border bg-white px-3 py-2 text-sm text-muted"
+                  >
+                    <FiCheckCircle className="text-link" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -202,7 +291,8 @@ export default function RoomDetailsPage() {
             <div className="mb-4 flex items-center justify-between gap-4">
               <h2 className="text-[1.3rem] font-semibold">Availability</h2>
               <span className="text-muted">
-                Prices for {room.availability.checkIn}
+                Prices for {selectedNights} night{selectedNights > 1 ? "s" : ""} ·{" "}
+                {selectedRooms} room{selectedRooms > 1 ? "s" : ""}
               </span>
             </div>
             {/* <div className="mb-4 grid grid-cols-[repeat(3,minmax(0,1fr))_auto] gap-3 rounded-sm border-2 border-accent bg-white p-3 max-[960px]:grid-cols-1">
@@ -228,7 +318,12 @@ export default function RoomDetailsPage() {
                 Search
               </button>
             </div> */}
-            <HeroSearch isReserving={true} />
+            <HeroSearch
+              isReserving={true}
+              fixedCity={room.location}
+              hideLocationField={true}
+              defaultOneNight={true}
+            />
             <div className="grid gap-3">
               {room.availability.rooms.map((item) => (
                 <div
@@ -245,8 +340,21 @@ export default function RoomDetailsPage() {
                     </div>
                   </div>
                   <div className="grid gap-2 text-right md:justify-items-end">
-                    <strong>{item.price}</strong>
-                    <button className="rounded-xs bg-white px-3 py-2 text-sm font-semibold text-primary">
+                    <strong>
+                      SAR{" "}
+                      {calculateTotalPrice(
+                        item.priceMultiplier || 1,
+                      ).toLocaleString()}
+                    </strong>
+                    <span className="text-xs text-muted">
+                      total for {selectedNights} night
+                      {selectedNights > 1 ? "s" : ""} · {selectedRooms} room
+                      {selectedRooms > 1 ? "s" : ""}
+                    </span>
+                    <button
+                      onClick={() => handleRoomReserve(item)}
+                      className="rounded-xs bg-white px-3 py-2 text-sm font-semibold text-primary"
+                    >
                       Reserve
                     </button>
                   </div>

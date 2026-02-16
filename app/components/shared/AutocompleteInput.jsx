@@ -20,16 +20,29 @@ export default function AutocompleteInput({
   placeholder,
   wrapperClassName = '',
   inputClassName = '',
-  onSelect
+  onSelect,
+  value: controlledValue,
+  onChange,
+  filterCountryCode = 'sa',
+  emptyText,
 }) {
-  const [value, setValue] = useState('');
+  const [internalValue, setInternalValue] = useState('');
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [highlighted, setHighlighted] = useState(-1);
   const [loading, setLoading] = useState(false);
+  const isControlled = typeof controlledValue === 'string';
+  const value = isControlled ? controlledValue : internalValue;
   const debounced = useDebouncedValue(value, 250);
   const wrapperRef = useRef(null);
   const listId = useId();
+
+  function setValue(nextValue) {
+    if (!isControlled) {
+      setInternalValue(nextValue);
+    }
+    onChange?.(nextValue);
+  }
 
   useEffect(() => {
     if (!debounced || debounced.trim().length < 3) {
@@ -50,7 +63,9 @@ export default function AutocompleteInput({
 
     const url = new URL('https://api.geoapify.com/v1/geocode/autocomplete');
     url.searchParams.set('text', debounced);
-    url.searchParams.set('filter', 'countrycode:sa');
+    if (filterCountryCode) {
+      url.searchParams.set('filter', `countrycode:${filterCountryCode}`);
+    }
     url.searchParams.set('limit', '6');
     url.searchParams.set('format', 'json');
     url.searchParams.set('apiKey', GEOAPIFY_KEY);
@@ -151,7 +166,9 @@ export default function AutocompleteInput({
             <div className="px-3 py-2 text-sm text-muted">Searching…</div>
           ) : null}
           {!loading && items.length === 0 ? (
-            <div className="px-3 py-2 text-sm text-muted">No results found in Saudi Arabia.</div>
+            <div className="px-3 py-2 text-sm text-muted">
+              {emptyText || 'No results found.'}
+            </div>
           ) : null}
           {items.map((item, index) => (
             <button

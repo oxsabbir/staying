@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { BiEdit, BiMenu } from "react-icons/bi";
+
 import {
   FaCar,
   FaHotel,
@@ -14,7 +16,7 @@ import {
 import { IoBedOutline } from "react-icons/io5";
 
 const navLinks = [
-  { title: "Stays", link: "/stays", icon: IoBedOutline },
+  { title: "Stays", link: "/", icon: IoBedOutline },
   { title: "Flights", link: "/flights", icon: FaPlane },
   {
     title: "Flight + Hotel",
@@ -28,7 +30,7 @@ const navLinks = [
 
 export default function HeaderNav() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isActive, setIsActive] = useState(false);
+  const pathname = usePathname();
 
   return (
     <header className="sticky md:relative top-0 z-40 bg-primary text-white pt-4  shadow-sm">
@@ -62,13 +64,19 @@ export default function HeaderNav() {
 
       <div className="container hidden  flex-wrap gap-2 pb-3 md:flex">
         {navLinks.map((item) => (
-          <button
+          <Link
+            href={item.link}
             key={item.link}
-            className={`rounded-full border flex gap-3  items-center border-white/30 px-4 py-2 text-sm text-white ${isActive ? "bg-white text-primary" : ""}`}
+            className={`rounded-full border flex gap-3  items-center px-4 py-2 text-sm text-white ${
+              pathname === item.link ||
+              (item.link === "/stays" && pathname === "/")
+                ? "border-white"
+                : "border-transparent"
+            }`}
           >
             <item.icon size={20} />
             {item.title}
-          </button>
+          </Link>
         ))}
       </div>
 
@@ -77,12 +85,19 @@ export default function HeaderNav() {
           <div className="rounded-lg border border-white/15 bg-primary-2 p-3 shadow-lg">
             <div className="grid gap-2">
               {navLinks.map((item) => (
-                <button
-                  key={item}
-                  className="w-full rounded-md border border-white/20 px-3 py-2 text-left text-sm text-white"
+                <Link
+                  href={item.link}
+                  key={item.link}
+                  className={`w-full rounded-md border flex items-center gap-3 px-3 py-2 text-left text-sm text-white ${
+                    pathname === item.link ||
+                    (item.link === "/stays" && pathname === "/")
+                      ? "border-white"
+                      : "border-transparent"
+                  }`}
                 >
-                  {item}
-                </button>
+                  <item.icon size={20} />
+                  {item.title}
+                </Link>
               ))}
             </div>
 

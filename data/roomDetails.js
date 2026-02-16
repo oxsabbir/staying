@@ -16,6 +16,7 @@ const generateRoomDetails = () => {
         reviewCount: prop.reviewCount.toLocaleString(),
         highlight: `A popular ${prop.ratingLabel.toLowerCase()} choice in ${prop.area}.`,
         images: prop.image,
+        basePrice: prop.price,
         overview: prop.description,
         mapLink: prop.mapLink,
         facts: [
@@ -40,18 +41,21 @@ const generateRoomDetails = () => {
             {
               type: prop.type,
               beds: prop.beds,
+              priceMultiplier: 1,
               price: `SAR ${prop.price.toLocaleString()}`,
               perks: prop.perks,
             },
             {
               type: "Standard Double Room",
               beds: "1 large double bed",
+              priceMultiplier: 0.8,
               price: `SAR ${(prop.price * 0.8).toLocaleString()}`,
               perks: ["Free cancellation"],
             },
             {
               type: "Executive Suite",
               beds: "1 extra-large double bed",
+              priceMultiplier: 1.5,
               price: `SAR ${(prop.price * 1.5).toLocaleString()}`,
               perks: ["Free cancellation", "Breakfast included", "City view"], // Added City view
             },

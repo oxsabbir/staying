@@ -9,7 +9,7 @@ const SearchContext = createContext({
     checkIn: null,
     checkOut: null,
     totalGuest: 0,
-    guests: {},
+    guests: { adults: 2, children: 0, rooms: 1 },
   },
   updateData: (payload) => {},
 });
@@ -20,10 +20,10 @@ export function SearchProvider({ children }) {
     checkIn: null,
     checkOut: null,
     totalGuest: 0,
-    guests: null,
+    guests: { adults: 2, children: 0, rooms: 1 },
   });
   const updateData = (payload) => {
-    setData(payload);
+    setData((prev) => ({ ...prev, ...payload }));
   };
 
   return (
