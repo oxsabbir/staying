@@ -116,7 +116,7 @@ export default function CarRentalPage() {
                 onSubmit={handleBookNow}
                 className="mt-8 rounded-md border-2  wfi  border-accent bg-accent p-[2px] text-text shadow-sm"
               >
-                <div className="grid gap-[2px] md:grid-cols-2 gap-x-1 gap-y-1 items-center xl:grid-cols-[2fr_1fr_1_1fr_1fr_auto]">
+                <div className="grid gap-[2px] md:grid-cols-2 gap-x-1 gap-y-1 items-center xl:grid-cols-[1.6fr_1fr_1fr_1fr_1fr_auto]">
                   <div className="flex min-h-[52px] md:col-span-full xl:col-auto items-center rounded-sm bg-white px-3 py-2">
                     <AutocompleteInput
                       placeholder="Pick-up location"
@@ -215,16 +215,16 @@ export default function CarRentalPage() {
           <h2 className="text-4xl font-bold">Travel more, spend less</h2>
           <div className="mt-4 flex flex-col items-start justify-between gap-4 rounded-lg border border-border bg-white p-5 md:flex-row md:items-center">
             <div>
-              <h3 className="text-xl font-semibold">Sign in, save money</h3>
+              <h3 className="text-xl font-semibold">Book Now, save money</h3>
               <p className="mt-1 text-muted">
                 Save 10% on select rental cars with partner offers
               </p>
               <div className="mt-3 flex gap-3">
                 <button className="rounded-sm bg-link px-4 py-2 text-sm font-semibold text-white">
-                  Sign in
+                  Call Us
                 </button>
                 <button className="rounded-sm border border-border px-4 py-2 text-sm font-semibold text-link">
-                  Register
+                  Learn More
                 </button>
               </div>
             </div>

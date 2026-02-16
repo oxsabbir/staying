@@ -179,7 +179,7 @@ function DateTimeDropdown({
     : placeholder;
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full ">
       <button
         type="button"
         onClick={() => !disabled && setOpen((prev) => !prev)}
@@ -187,7 +187,7 @@ function DateTimeDropdown({
           disabled ? "cursor-not-allowed text-muted/60" : "text-muted"
         }`}
       >
-        <FiClock className="text-primary" />
+        <FiClock className="text-primary" size={20} />
         <span className="truncate">{label}</span>
       </button>
 
@@ -431,7 +431,7 @@ export default function AirportTaxisPage() {
                 required
               />
             </div>
-            <div className="min-h-[54px]  rounded-sm bg-white px-3 py-2 lg:col-start-1 lg:row-start-2">
+            <div className="min-h-[54px] flex items-center   rounded-sm bg-white px-3 py-2 lg:col-start-1 lg:row-start-2">
               <DateTimeDropdown
                 value={pickupDateTime}
                 onChange={(next) => {
@@ -446,7 +446,7 @@ export default function AirportTaxisPage() {
                 timeLabel="Pick up time"
               />
             </div>
-            <div className="min-h-[54px] rounded-sm bg-white px-3 py-2 lg:col-start-2 lg:row-start-2">
+            <div className="min-h-[54px]  flex items-center  rounded-sm bg-white px-3 py-2 lg:col-start-2 lg:row-start-2">
               <DateTimeDropdown
                 value={returnDateTime}
                 onChange={(next) =>
@@ -460,7 +460,7 @@ export default function AirportTaxisPage() {
               />
             </div>
             <div className="flex min-h-[54px] items-center gap-2 rounded-sm bg-white px-3 py-2 text-base lg:col-start-3 lg:row-start-2">
-              <FiUser className="text-primary" />
+              <FiUser className="text-primary" size={20} />
               <select
                 value={riders}
                 onChange={(e) => setRiders(Number(e.target.value))}
@@ -472,7 +472,6 @@ export default function AirportTaxisPage() {
                   </option>
                 ))}
               </select>
-              <FiChevronDown className="text-muted" />
             </div>
             <button
               type="submit"
@@ -502,32 +501,30 @@ export default function AirportTaxisPage() {
             </div>
           ))}
         </section>
-
-        <section className="mt-10">
-          <h2 className="text-2xl font-semibold">Your account, your travel</h2>
-          <div className="mt-4 flex flex-col items-start justify-between gap-4 rounded-lg border border-border bg-white p-4 shadow-sm md:flex-row md:items-center">
+        <section className="container pt-[400px] md:pt-[300px] xl:pt-10">
+          <h2 className="text-4xl font-bold">Travel more, spend less</h2>
+          <div className="mt-4 flex flex-col items-start justify-between gap-4 rounded-lg border border-border bg-white p-5 md:flex-row md:items-center">
             <div>
-              <div className="text-base font-semibold">
-                All your trip details in one place
-              </div>
-              <p className="mt-1 text-sm text-muted">
-                Sign in to book faster and manage your trip with ease
+              <h3 className="text-xl font-semibold">Book Now, save money</h3>
+              <p className="mt-1 text-muted">
+                Save 10% on select rental cars with partner offers
               </p>
-              <div className="mt-3 flex flex-wrap gap-3">
-                <button className="rounded-md bg-link px-4 py-2 text-sm font-semibold text-white">
-                  Sign in
+              <div className="mt-3 flex gap-3">
+                <button className="rounded-sm bg-link px-4 py-2 text-sm font-semibold text-white">
+                  Call Us
                 </button>
-                <button className="rounded-md border border-border px-4 py-2 text-sm font-semibold text-link">
-                  Register
+                <button className="rounded-sm border border-border px-4 py-2 text-sm font-semibold text-link">
+                  Learn More
                 </button>
               </div>
             </div>
-            <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-primary/10 text-primary text-sm font-semibold">
-              Genius
+            <div className="rounded-lg bg-[#eef5ff] p-3">
+              <span className="inline-block rounded-md bg-link px-3 py-2 text-sm font-bold text-white">
+                Genius
+              </span>
             </div>
           </div>
         </section>
-
         <section className="mt-12">
           <h2 className="text-2xl font-semibold text-center">
             Airport transportation made easy
