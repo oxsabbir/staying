@@ -248,7 +248,9 @@ export default function RoomDetailsPage() {
                       <p className="text-xs uppercase tracking-wide text-muted">
                         {fact.label}
                       </p>
-                      <p className="mt-1 font-semibold text-text">{fact.value}</p>
+                      <p className="mt-1 font-semibold text-text">
+                        {fact.value}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -270,7 +272,9 @@ export default function RoomDetailsPage() {
             </div>
 
             <div className="mt-6">
-              <h3 className="text-base font-semibold">Most popular facilities</h3>
+              <h3 className="text-base font-semibold">
+                Most popular facilities
+              </h3>
               <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {room.amenities.map((item) => (
                   <div
@@ -291,8 +295,8 @@ export default function RoomDetailsPage() {
             <div className="mb-4 flex items-center justify-between gap-4">
               <h2 className="text-[1.3rem] font-semibold">Availability</h2>
               <span className="text-muted">
-                Prices for {selectedNights} night{selectedNights > 1 ? "s" : ""} ·{" "}
-                {selectedRooms} room{selectedRooms > 1 ? "s" : ""}
+                Prices for {selectedNights} night{selectedNights > 1 ? "s" : ""}{" "}
+                · {selectedRooms} room{selectedRooms > 1 ? "s" : ""}
               </span>
             </div>
             {/* <div className="mb-4 grid grid-cols-[repeat(3,minmax(0,1fr))_auto] gap-3 rounded-sm border-2 border-accent bg-white p-3 max-[960px]:grid-cols-1">
@@ -353,9 +357,9 @@ export default function RoomDetailsPage() {
                     </span>
                     <button
                       onClick={() => handleRoomReserve(item)}
-                      className="rounded-xs bg-white px-3 py-2 text-sm font-semibold text-primary"
+                      className="rounded-xs  px-3 py-2 bg-green-600 text-white text-sm font-semibold text-primary"
                     >
-                      Reserve
+                      Reserve Now
                     </button>
                   </div>
                 </div>
@@ -389,7 +393,6 @@ export default function RoomDetailsPage() {
               ))}
             </ul>
           </div>
-          <button className="text-link">See all policies</button>
         </section>
       </main>
       <SiteFooter />

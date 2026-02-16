@@ -58,22 +58,24 @@ export default function HeaderNav() {
         </button>
       </div>
 
-      <div className="container hidden  flex-wrap gap-2 pb-3 md:flex">
-        {navLinks.map((item) => (
-          <Link
-            href={item.link}
-            key={item.link}
-            className={`rounded-full border flex gap-3  items-center px-4 py-2 text-sm text-white ${
-              pathname === item.link ||
-              (item.link === "/stays" && pathname === "/")
-                ? "border-white"
-                : "border-transparent"
-            }`}
-          >
-            <item.icon size={20} />
-            {item.title}
-          </Link>
-        ))}
+      <div className="overflow-auto w-full">
+        <div className="container  gap-2 pb-3 flex">
+          {navLinks.map((item) => (
+            <Link href={item.link} key={item.link}>
+              <div
+                className={`rounded-full border flex gap-3 whitespace-nowrap  items-center px-4 py-2 text-sm text-white ${
+                  pathname === item.link ||
+                  (item.link === "/stays" && pathname === "/")
+                    ? "border-white"
+                    : "border-transparent"
+                }`}
+              >
+                <item.icon size={20} />
+                {item.title}
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
 
       {menuOpen ? (
