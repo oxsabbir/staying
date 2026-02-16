@@ -70,7 +70,7 @@ export default function FlightsPage() {
         <section className="rounded-xl bg-[#dfe2e7]">
           <div className="">
             <div className="p-5 sm:p-8 lg:p-4 lg:py-8">
-              <div className=" flex items-center justify-between">
+              <div className=" flex lg:px-6 items-center justify-between">
                 <h1 className="max-w-[760px] text-3xl font-bold  sm:text-5xl ">
                   Find Hajj-friendly flight options in one place.
                 </h1>

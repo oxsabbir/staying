@@ -19,8 +19,6 @@ const navLinks = [
 const mobileMenuLinks = [
   { title: "About Us", link: "/about" },
   { title: "Contact", link: "/contact" },
-  { title: "Register", link: "/register" },
-  { title: "Sign in", link: "/signin" },
 ];
 
 export default function HeaderNav() {
