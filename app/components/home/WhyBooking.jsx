@@ -1,9 +1,9 @@
-import customerSupport from "../public/images/CustomerSupport.png";
-import freeCancellation from "../public/images/FreeCancellation.png";
-import reviews from "../public/images/Reviews.png";
-import tripsGlobe from "../public/images/TripsGlobe.png";
+import customerSupport from "../../../public/images/CustomerSupport.png";
+import freeCancellation from "../../../public/images/FreeCancellation.png";
+import reviews from "../../../public/images/Reviews.png";
+import tripsGlobe from "../../../public/images/TripsGlobe.png";
 
-const whyCards = [
+const cards = [
   {
     title: "Book now, pay at the property",
     body: "FREE cancellation on most rooms",
@@ -26,7 +26,7 @@ const whyCards = [
   },
 ];
 
-export default function WhyBooking({ cards }) {
+export default function WhyBooking() {
   return (
     <section className="py-8">
       <div className="container">

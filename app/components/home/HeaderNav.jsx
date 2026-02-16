@@ -11,22 +11,24 @@ import {
   FaSuitcaseRolling,
   FaTaxi,
 } from "react-icons/fa";
+import { IoBedOutline } from "react-icons/io5";
 
 const navLinks = [
-  { title: "Stays", link: "/stays", icon: <FaHotel /> },
-  { title: "Flights", link: "/flights", icon: <FaPlane /> },
+  { title: "Stays", link: "/stays", icon: IoBedOutline },
+  { title: "Flights", link: "/flights", icon: FaPlane },
   {
     title: "Flight + Hotel",
     link: "/flight-hotel",
-    icon: <FaSuitcaseRolling />,
+    icon: FaSuitcaseRolling,
   },
-  { title: "Car rentals", link: "/cars", icon: <FaCar /> },
-  { title: "Attractions", link: "/attractions", icon: <FaMapMarkedAlt /> },
-  { title: "Airport taxis", link: "/airport-taxis", icon: <FaTaxi /> },
+  { title: "Car rentals", link: "/cars", icon: FaCar },
+  { title: "Attractions", link: "/attractions", icon: FaMapMarkedAlt },
+  { title: "Airport taxis", link: "/airport-taxis", icon: FaTaxi },
 ];
 
 export default function HeaderNav() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
   return (
     <header className="sticky md:relative top-0 z-40 bg-primary text-white pt-4  shadow-sm">
@@ -61,11 +63,11 @@ export default function HeaderNav() {
       <div className="container hidden  flex-wrap gap-2 pb-3 md:flex">
         {navLinks.map((item) => (
           <button
-            key={item}
-            className="rounded-full border flex gap-3  items-center border-white/30 px-4 py-2 text-sm text-white"
+            key={item.link}
+            className={`rounded-full border flex gap-3  items-center border-white/30 px-4 py-2 text-sm text-white ${isActive ? "bg-white text-primary" : ""}`}
           >
-            {item}
-            <BiEdit size={24} />
+            <item.icon size={20} />
+            {item.title}
           </button>
         ))}
       </div>
