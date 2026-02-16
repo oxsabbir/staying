@@ -16,6 +16,7 @@ import SiteFooter from "../../components/home/SiteFooter";
 import Wishlist from "../../components/shared/Wishlist";
 import { HeroSearch } from "../../components/home";
 import { useSearchContext } from "../../context/SearchContext";
+import HeaderNav from "../../components/home/HeaderNav";
 
 export default function RoomDetailsPage() {
   const paramsResult = useParams();
@@ -75,57 +76,7 @@ export default function RoomDetailsPage() {
 
   return (
     <div className="min-h-screen bg-bg text-text">
-      <header className="bg-primary text-white pt-4 pb-3">
-        <div className="container flex items-center justify-between gap-5 pb-3">
-          <div className="text-xl font-bold">Staying.com</div>
-          <div className="flex flex-wrap items-center gap-2">
-            <button className="rounded-xs border border-transparent px-3 py-2 text-white">
-              BDT
-            </button>
-            <button className="rounded-xs border border-transparent px-3 py-2 text-white">
-              English
-            </button>
-            <button className="rounded-xs border border-transparent px-3 py-2 text-white">
-              List your property
-            </button>
-            <button className="rounded-xs border border-white px-3 py-2 text-white">
-              Register
-            </button>
-            <button className="rounded-xs bg-white px-3 py-2 font-semibold text-primary">
-              Sign in
-            </button>
-          </div>
-        </div>
-        <div className="container pb-4">
-          <div className="grid grid-cols-[repeat(3,minmax(180px,1fr))_140px] overflow-hidden rounded-sm border-2 border-accent bg-white max-[960px]:grid-cols-1">
-            <div className="flex items-center gap-2 border-r border-border p-3 text-muted max-[960px]:border-b max-[960px]:border-r-0">
-              <FiMapPin />
-              <input
-                className="w-full text-text placeholder:text-muted"
-                placeholder="Kathmandu"
-              />
-            </div>
-            <div className="flex items-center gap-2 border-r border-border p-3 text-muted max-[960px]:border-b max-[960px]:border-r-0">
-              <FiCalendar />
-              <input
-                className="w-full text-text placeholder:text-muted"
-                placeholder="Check-in date — Check-out date"
-              />
-            </div>
-            <div className="flex items-center gap-2 border-r border-border p-3 text-muted max-[960px]:border-b max-[960px]:border-r-0">
-              <FiUsers />
-              <input
-                className="w-full text-text placeholder:text-muted"
-                placeholder="2 adults · 0 children · 1 room"
-              />
-            </div>
-            <button className="flex items-center justify-center gap-2 bg-link font-semibold text-white max-[960px]:p-3">
-              <FiSearch />
-              Search
-            </button>
-          </div>
-        </div>
-      </header>
+      <HeaderNav />
 
       <main className="bg-bg pb-10">
         <section className="container flex flex-col justify-between gap-4 py-6 md:flex-row md:items-start">
