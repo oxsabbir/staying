@@ -9,7 +9,7 @@ export default function TravelMore() {
           </p>
         </div>
         <div className="flex gap-2">
-          <a href={`tel:${process.env.NEXT_PUBLIC_PHONE_NUMBER || "00"}`}>
+          <a href={`tel:${process.env.NEXT_PUBLIC_PHONE_NUMBER}`}>
             <button className="rounded-sm bg-link px-4 py-2 text-sm font-semibold text-white">
               Call Us
             </button>

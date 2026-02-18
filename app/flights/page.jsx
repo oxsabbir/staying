@@ -24,8 +24,7 @@ export default function FlightsPage() {
     },
   });
 
-  const whatsappNumber =
-    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801000000000";
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
 
   const setField = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));

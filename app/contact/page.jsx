@@ -4,8 +4,8 @@ import { HeaderNav, SiteFooter } from "../components/home";
 const quickContacts = [
   {
     title: "WhatsApp",
-    value: "+966 57 603 3238",
-    href: "https://wa.me/966576033238",
+    value: `+${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER_FORMATED}`,
+    href: `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`,
     icon: FiMessageCircle,
   },
   {
@@ -16,8 +16,8 @@ const quickContacts = [
   },
   {
     title: "Phone",
-    value: "+966 57 603 3238",
-    href: "tel:+966576033238",
+    value: `+${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER_FORMATED}`,
+    href: `tel:+${process.env.NEXT_PUBLIC_PHONE_NUMBER}`,
     icon: FiPhoneCall,
   },
   {

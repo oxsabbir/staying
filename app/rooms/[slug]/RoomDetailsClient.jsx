@@ -23,8 +23,7 @@ export default function RoomDetailsClient({ slug }) {
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const { updateData, data } = useSearchContext();
-  const whatsappNumber =
-    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "966576033238";
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
 
   const selectedRooms = Math.max(1, data?.guests?.rooms || 1);
   const selectedAdults = data?.guests?.adults || 2;

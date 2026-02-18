@@ -69,8 +69,7 @@ export default function CarRentalPage() {
     dropoffTime: "10:00 AM",
   });
 
-  const whatsappNumber =
-    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801000000000";
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
 
   const handleChange = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -220,7 +219,7 @@ export default function CarRentalPage() {
                 Save 10% on select rental cars with partner offers
               </p>
               <div className="mt-3 flex gap-3">
-                <a href={`tel:${process.env.NEXT_PUBLIC_PHONE_NUMBER || "00"}`}>
+                <a href={`tel:${process.env.NEXT_PUBLIC_PHONE_NUMBER}`}>
                   <button className="rounded-sm bg-link px-4 py-2 text-sm font-semibold text-white">
                     Call Us
                   </button>

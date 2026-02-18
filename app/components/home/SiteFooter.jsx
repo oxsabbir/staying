@@ -29,7 +29,11 @@ export default function SiteFooter() {
           </h4>
           <div className="mt-3 grid gap-2 text-sm">
             {serviceLinks.map((item) => (
-              <Link key={item.href} href={item.href} className="text-muted hover:text-link">
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-muted hover:text-link"
+              >
                 {item.label}
               </Link>
             ))}
@@ -42,23 +46,33 @@ export default function SiteFooter() {
           </h4>
           <div className="mt-3 grid gap-2 text-sm">
             {companyLinks.map((item) => (
-              <Link key={item.href} href={item.href} className="text-muted hover:text-link">
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-muted hover:text-link"
+              >
                 {item.label}
               </Link>
             ))}
             <a
-              href="https://wa.me/966576033238"
+              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`}
               target="_blank"
               rel="noreferrer"
               className="text-muted hover:text-link"
             >
               WhatsApp Support
             </a>
-            <a href="mailto:support@staying.com" className="text-muted hover:text-link">
+            <a
+              href="mailto:support@staying.com"
+              className="text-muted hover:text-link"
+            >
               support@staying.com
             </a>
-            <a href="tel:+966576033238" className="text-muted hover:text-link">
-              +966 57 603 3238
+            <a
+              href={`tel:+${process.env.NEXT_PUBLIC_PHONE_NUMBER}`}
+              className="text-muted hover:text-link"
+            >
+              +{process.env.NEXT_PUBLIC_WHATSAPP_NUMBER_FORMATED}
             </a>
           </div>
         </div>

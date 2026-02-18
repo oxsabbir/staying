@@ -343,8 +343,7 @@ export default function AirportTaxisPage() {
     hour: pickupDateTime.hour,
     minute: pickupDateTime.minute,
   });
-  const whatsappNumber =
-    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "966576033238";
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
 
   const isFormValid =
     pickupLocation.trim().length > 0 &&
@@ -512,7 +511,7 @@ export default function AirportTaxisPage() {
                 Save 10% on select rental cars with partner offers
               </p>
               <div className="mt-3 flex gap-3">
-                <a href={`tel:${process.env.NEXT_PUBLIC_PHONE_NUMBER || "00"}`}>
+                <a href={`tel:${process.env.NEXT_PUBLIC_PHONE_NUMBER}`}>
                   <button className="rounded-sm bg-link px-4 py-2 text-sm font-semibold text-white">
                     Call Us
                   </button>
