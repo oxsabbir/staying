@@ -1,4 +1,8 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { fetchCities } from "@/api/city";
 
 const destinations = [
   {
@@ -34,6 +38,15 @@ const destinations = [
 ];
 
 export default function TrendingDestinations() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["hotels"],
+    queryFn: fetchCities,
+  });
+  console.log(data);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error loading data</p>;
+
   return (
     <section className="py-8">
       <div className="container">

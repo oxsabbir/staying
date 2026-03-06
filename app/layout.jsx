@@ -1,3 +1,4 @@
+import QueryProvider from "@/provider/queryProvider";
 import { SearchProvider } from "./context/SearchContext";
 import "./globals.css";
 
@@ -56,7 +57,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <SearchProvider>
-        <body>{children}</body>
+        <body>
+          <QueryProvider>{children}</QueryProvider>
+        </body>
       </SearchProvider>
     </html>
   );
