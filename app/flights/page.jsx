@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { FiRepeat } from "react-icons/fi";
+import { FiShield, FiClock, FiZap, FiMapPin, FiCalendar, FiCheckCircle, FiUsers } from "react-icons/fi";
 import { HeaderNav, SiteFooter } from "../components/home";
 import AutocompleteInput from "../components/shared/AutocompleteInput";
 import {
@@ -15,6 +15,8 @@ export default function FlightsPage() {
     tripType: "Round-trip",
     from: "",
     to: "",
+    fromId: null,
+    toId: null,
     departureDate: "",
     returnDate: "",
     travelers: {
@@ -28,6 +30,22 @@ export default function FlightsPage() {
 
   const setField = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleSelectFrom = (airport) => {
+    setForm((prev) => ({
+      ...prev,
+      from: `${airport.city} (${airport.iata})`,
+      fromId: airport.id,
+    }));
+  };
+
+  const handleSelectTo = (airport) => {
+    setForm((prev) => ({
+      ...prev,
+      to: `${airport.city} (${airport.iata})`,
+      toId: airport.id,
+    }));
   };
 
   const isFormValid =
@@ -62,113 +80,200 @@ export default function FlightsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f0f1f3] text-text">
+    <div className="min-h-screen bg-[#f8f9fa] text-text font-sans">
       <HeaderNav />
 
-      <main className="container py-5 sm:py-8">
-        <section className="rounded-xl bg-[#dfe2e7]">
-          <div className="">
-            <div className="p-5 sm:p-8 lg:p-4 lg:py-8">
-              <div className=" flex lg:px-6 items-center justify-between">
-                <h1 className="max-w-[760px] text-3xl font-bold  sm:text-5xl ">
-                  Find Hajj-friendly flight options in one place.
-                </h1>
-                <div className="hidden lg:block">
-                  <img
-                    src="/images/hajj.png"
-                    alt="flight"
-                    className="h-[200px]"
-                  />
-                </div>
+      {/* Minimal Hero Section */}
+      <section className="bg-primary text-white pt-12 pb-24 sm:pt-16 sm:pb-32 relative overflow-hidden">
+        <div className="container-wide relative z-10 text-center">
+          <h1 className="text-3xl sm:text-5xl font-bold mb-4 tracking-tight">
+            Book Your Spiritual Journey
+          </h1>
+          <p className="text-white/70 text-sm sm:text-base max-w-[500px] mx-auto">
+            Hajj and Umrah flight packages tailored for your comfort.
+          </p>
+        </div>
+        
+        {/* Abstract Background Element */}
+        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl"></div>
+      </section>
+
+      <main className="container-wide -mt-16 sm:-mt-20 pb-20 relative z-20">
+        {/* Minimal Search Bar Container */}
+        <div className="bg-white rounded-xl shadow-2 p-1.5 sm:p-2 border border-border">
+          <form onSubmit={handleSubmit}>
+            {/* Trip Type Tabs */}
+            <div className="flex items-center gap-1 p-1 mb-2 bg-subtle rounded-lg w-fit ml-2 mt-2">
+              {["Round-trip", "One-way"].map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setField("tripType", type)}
+                  className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${
+                    form.tripType === type
+                      ? "bg-white text-primary shadow-sm"
+                      : "text-muted hover:text-text"
+                  }`}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+
+            <div className="grid gap-1 lg:grid-cols-[1.2fr_1.2fr_1.2fr_1fr_auto] items-stretch">
+              <div className="bg-white border border-transparent hover:border-link/30 p-4 transition-colors group">
+                <AutocompleteInput
+                  placeholder="Flying from"
+                  value={form.from}
+                  onChange={(value) => setField("from", value)}
+                  onSelect={handleSelectFrom}
+                  excludeId={form.toId}
+                  emptyText="No locations found."
+                  inputClassName="bg-transparent text-sm font-semibold w-full focus:outline-none border-none p-0 placeholder:text-muted/50"
+                />
               </div>
 
-              <form onSubmit={handleSubmit} className="mt-8">
-                <label className="text-sm font-medium text-text/80">
-                  Trip type
-                </label>
-                <select
-                  value={form.tripType}
-                  onChange={(e) => setField("tripType", e.target.value)}
-                  className="mt-1 block rounded-md border border-border bg-white px-3 py-2 text-sm"
+              <div className="bg-white border border-transparent hover:border-link/30 border-l-border lg:border-l p-4 transition-colors group">
+                <AutocompleteInput
+                  placeholder="Flying to"
+                  value={form.to}
+                  onChange={(value) => setField("to", value)}
+                  onSelect={handleSelectTo}
+                  excludeId={form.fromId}
+                  emptyText="No locations found."
+                  inputClassName="bg-transparent text-sm font-semibold w-full focus:outline-none border-none p-0 placeholder:text-muted/50"
+                />
+              </div>
+
+              <div className="bg-white border border-transparent hover:border-link/30 border-l-border lg:border-l p-4 transition-colors group">
+                <DateRangeDropdown
+                  startDate={form.departureDate}
+                  endDate={form.tripType === "One-way" ? "" : form.returnDate}
+                  onChange={({ startDate, endDate }) => {
+                    setField("departureDate", startDate);
+                    setField("returnDate", form.tripType === "One-way" ? "" : endDate);
+                  }}
+                  placeholder={form.tripType === "One-way" ? "Add date" : "Add dates"}
+                  singleDateMode={form.tripType === "One-way"}
+                  wrapperClassName="w-full"
+                />
+              </div>
+
+              <div className="bg-white border border-transparent hover:border-link/30 border-l-border lg:border-l p-4 transition-colors group">
+                <TravelerCabinDropdown
+                  value={form.travelers}
+                  onChange={(value) => setField("travelers", value)}
+                  wrapperClassName="w-full"
+                />
+              </div>
+
+              <div className="p-2 lg:p-1 flex items-center bg-white lg:bg-transparent">
+                <button
+                  type="submit"
+                  disabled={!isFormValid}
+                  className={`w-full lg:w-auto px-10 py-4 h-full rounded-lg text-sm font-bold text-white transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 ${
+                    isFormValid ? "bg-link hover:bg-[#005dc1]" : "cursor-not-allowed bg-blue-600/50"
+                  }`}
                 >
-                  <option>Round-trip</option>
-                  <option>One-way</option>
-                </select>
-
-                <div className="mt-4  rounded-lg border flex border-border bg-white p-2 shadow-sm">
-                  <div className="grid gap-2 gap-y-5 xl:gap-y-2  items-center  w-full  xl:grid-cols-[2fr_2fr_1.5fr_1.5fr_1.5fr]">
-                    <div className="rounded-md border border-border px-3 py-2 xl:border-0 xl:border-r xl:rounded-none">
-                      <AutocompleteInput
-                        placeholder="Flying from"
-                        value={form.from}
-                        onChange={(value) => setField("from", value)}
-                        onSelect={(value) => setField("from", value)}
-                        filterCountryCode={null}
-                        emptyText="No locations found."
-                        inputClassName="text-sm"
-                      />
-                    </div>
-
-                    <div className="rounded-md border border-border px-3 py-2 xl:border-0 xl:border-r xl:rounded-none">
-                      <AutocompleteInput
-                        placeholder="Flying to (Saudi Arabia)"
-                        value={form.to}
-                        onChange={(value) => setField("to", value)}
-                        onSelect={(value) => setField("to", value)}
-                        filterCountryCode="sa"
-                        emptyText="No Saudi locations found."
-                        inputClassName="text-sm"
-                      />
-                    </div>
-
-                    <div className="rounded-md border border-border px-3 py-2 xl:border-0 xl:border-r xl:rounded-none">
-                      <DateRangeDropdown
-                        startDate={form.departureDate}
-                        endDate={
-                          form.tripType === "One-way" ? "" : form.returnDate
-                        }
-                        onChange={({ startDate, endDate }) => {
-                          setField("departureDate", startDate);
-                          setField(
-                            "returnDate",
-                            form.tripType === "One-way" ? "" : endDate,
-                          );
-                        }}
-                        placeholder={
-                          form.tripType === "One-way"
-                            ? "Departure date"
-                            : "Departure - Return"
-                        }
-                        singleDateMode={form.tripType === "One-way"}
-                        wrapperClassName={form.tripType === "One-way" ? "" : ""}
-                      />
-                    </div>
-
-                    <div className="rounded-md border border-border px-3 py-2 xl:border-0 xl:rounded-none">
-                      <TravelerCabinDropdown
-                        value={form.travelers}
-                        onChange={(value) => setField("travelers", value)}
-                      />
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={!isFormValid}
-                      className={`rounded-md px-5 py-3 text-sm font-semibold text-white xl:min-w-[170px] ${
-                        isFormValid
-                          ? "bg-link hover:bg-[#005dc1]"
-                          : "cursor-not-allowed bg-blue-600/80"
-                      }`}
-                    >
-                      Book on WhatsApp
-                    </button>
-                  </div>
-                </div>
-              </form>
+                  Search
+                </button>
+              </div>
             </div>
+          </form>
+        </div>
+
+        {/* Why Choose Us Section */}
+        <section className="mt-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Specialized for Pilgrimage</h2>
+            <p className="text-muted max-w-[600px] mx-auto">We understand the unique needs of Hajj and Umrah travelers, offering services that make your spiritual journey comfortable and stress-free.</p>
+          </div>
+          
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                icon: <FiShield className="w-6 h-6" />,
+                title: "Flexible Bookings",
+                desc: "Changes and cancellations handled specifically for pilgrimage-related requirements and visa delays.",
+                color: "bg-blue-50 text-link"
+              },
+              {
+                icon: <FiClock className="w-6 h-6" />,
+                title: "24/7 Dedicated Support",
+                desc: "Our team is available round the clock to assist with your flights while you are in Saudi Arabia.",
+                color: "bg-green-50 text-green-600"
+              },
+              {
+                icon: <FiZap className="w-6 h-6" />,
+                title: "Direct Haram Access",
+                desc: "We prioritize flight options that align with hotel check-ins near the Haram in Mecca and Medina.",
+                color: "bg-accent/10 text-accent"
+              }
+            ].map((feature, i) => (
+              <div key={i} className="bg-white p-8 rounded-xl border border-border shadow-sm hover:shadow-md transition-shadow">
+                <div className={`w-12 h-12 rounded-full ${feature.color} flex items-center justify-center mb-6`}>
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                <p className="text-muted leading-relaxed text-sm">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Popular Saudi Destinations */}
+        <section className="mt-24">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-bold">Popular Saudi Destinations</h2>
+            <div className="h-px bg-border flex-1 mx-8 hidden sm:block"></div>
+            <button className="text-link font-bold text-sm hover:underline">View all cities</button>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { city: "Jeddah", label: "Gate to Mecca", img: "/images/destinations/jeddah.jpg" },
+              { city: "Madinah", label: "Prophet's City", img: "/images/destinations/medina.jpg" },
+              { city: "Riyadh", label: "The Capital", img: "/images/destinations/riyadh.jpg" },
+              { city: "Dammam", label: "Gulf Gateway", img: "/images/destinations/dammam.jpg" }
+            ].map((dest, i) => (
+              <div key={i} className="group relative h-[300px] rounded-xl overflow-hidden cursor-pointer">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
+                {/* Fallback color if image doesn't exist */}
+                <div className="absolute inset-0 bg-primary/20"></div>
+                <div className="absolute bottom-0 left-0 p-6 z-20 transition-transform group-hover:-translate-y-2">
+                  <p className="text-xs font-bold text-accent uppercase tracking-widest mb-1">{dest.label}</p>
+                  <h3 className="text-2xl font-bold text-white">{dest.city}</h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Info Banner */}
+        <section className="mt-24 bg-white rounded-2xl border border-border p-8 sm:p-12 shadow-sm overflow-hidden relative">
+          <div className="max-w-[700px] space-y-6 relative z-10">
+            <h2 className="text-3xl font-bold">Ready to start your journey?</h2>
+            <p className="text-muted leading-relaxed">
+              Our experts are ready to find the most cost-effective and comfortable flight options for you. Booking via WhatsApp ensures personalized service and immediate assistance.
+            </p>
+            <div className="flex flex-wrap gap-4 pt-4">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <FiCheckCircle className="text-green-600" /> No hidden fees
+              </div>
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <FiCheckCircle className="text-green-600" /> Best price guarantee
+              </div>
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <FiCheckCircle className="text-green-600" /> Pilgrim support
+              </div>
+            </div>
+          </div>
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-10 opacity-10 hidden xl:block">
+             <FiZap className="w-64 h-64" />
           </div>
         </section>
       </main>
+
       <SiteFooter />
     </div>
   );

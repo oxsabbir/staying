@@ -1,20 +1,8 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { FiMapPin } from "react-icons/fi";
-
-const GEOAPIFY_KEY = process.env.NEXT_PUBLIC_GEOAPIFY_KEY;
-
-function useDebouncedValue(value, delay) {
-  const [debounced, setDebounced] = useState(value);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDebounced(value), delay);
-    return () => clearTimeout(timer);
-  }, [value, delay]);
-
-  return debounced;
-}
+import { FiMapPin, FiNavigation } from "react-icons/fi";
+import airports from "../../../data/airports.json";
 
 export default function AutocompleteInput({
   placeholder,
@@ -23,20 +11,39 @@ export default function AutocompleteInput({
   onSelect,
   value: controlledValue,
   onChange,
-  filterCountryCode = "sa",
   emptyText,
   required = false,
+  excludeId = null,
+  isSaudiOnly = false,
 }) {
   const [internalValue, setInternalValue] = useState("");
   const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([]);
   const [highlighted, setHighlighted] = useState(-1);
-  const [loading, setLoading] = useState(false);
   const isControlled = typeof controlledValue === "string";
   const value = isControlled ? controlledValue : internalValue;
-  const debounced = useDebouncedValue(value, 250);
   const wrapperRef = useRef(null);
   const listId = useId();
+
+  const items = useMemo(() => {
+    if (!value || value.length < 1) return [];
+    
+    const query = value.toLowerCase();
+    return airports
+      .filter((airport) => {
+        // Exclusion logic: don't show the airport selected in the other field
+        if (excludeId && airport.id === excludeId) return false;
+        
+        // Saudi Only filter
+        if (isSaudiOnly && airport.country !== "Saudi Arabia") return false;
+
+        return (
+          airport.name.toLowerCase().includes(query) ||
+          airport.city.toLowerCase().includes(query) ||
+          airport.iata.toLowerCase().includes(query)
+        );
+      })
+      .slice(0, 8);
+  }, [value, excludeId, isSaudiOnly]);
 
   function setValue(nextValue) {
     if (!isControlled) {
@@ -44,61 +51,6 @@ export default function AutocompleteInput({
     }
     onChange?.(nextValue);
   }
-
-  useEffect(() => {
-    if (!debounced || debounced.trim().length < 3) {
-      setItems([]);
-      setOpen(false);
-      setHighlighted(-1);
-      return;
-    }
-
-    if (!GEOAPIFY_KEY) {
-      setItems([]);
-      setOpen(false);
-      return;
-    }
-
-    let active = true;
-    setLoading(true);
-
-    const url = new URL("https://api.geoapify.com/v1/geocode/autocomplete");
-    url.searchParams.set("text", debounced);
-    if (filterCountryCode) {
-      url.searchParams.set("filter", `countrycode:${filterCountryCode}`);
-    }
-    url.searchParams.set("limit", "6");
-    url.searchParams.set("format", "json");
-    url.searchParams.set("apiKey", GEOAPIFY_KEY);
-
-    fetch(url.toString())
-      .then((res) => res.json())
-      .then((data) => {
-        if (!active) return;
-        const results = Array.isArray(data.results) ? data.results : [];
-        const suggestions = results.map((result) => ({
-          id: result.place_id,
-          label: result.formatted,
-          category: result.category,
-        }));
-        setItems(suggestions);
-        setOpen(true);
-        setHighlighted(-1);
-      })
-      .catch(() => {
-        if (!active) return;
-        setItems([]);
-        setOpen(false);
-      })
-      .finally(() => {
-        if (!active) return;
-        setLoading(false);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [debounced]);
 
   useEffect(() => {
     function onClickOutside(event) {
@@ -128,9 +80,7 @@ export default function AutocompleteInput({
       if (highlighted >= 0) {
         event.preventDefault();
         const selected = items[highlighted];
-        setValue(selected.label);
-        onSelect?.(selected.label);
-        setOpen(false);
+        handleSelect(selected);
       }
     }
 
@@ -139,16 +89,24 @@ export default function AutocompleteInput({
     }
   }
 
+  const handleSelect = (airport) => {
+    const displayValue = `${airport.city} (${airport.iata})`;
+    setValue(displayValue);
+    onSelect?.(airport); // Pass the full airport object
+    setOpen(false);
+  };
+
   return (
     <div ref={wrapperRef} className={`relative w-full ${wrapperClassName}`}>
       <div className="flex items-center gap-2">
-        <FiMapPin className="text-primary" size={20} />
+        <FiMapPin className="text-muted" size={18} />
         <input
           value={value}
-          onChange={(event) => setValue(event.target.value)}
-          onFocus={() =>
-            value.trim().length >= 3 && items.length > 0 && setOpen(true)
-          }
+          onChange={(event) => {
+            setValue(event.target.value);
+            setOpen(true);
+          }}
+          onFocus={() => value.trim().length >= 1 && items.length > 0 && setOpen(true)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           className={`w-full text-base outline-none ${inputClassName}`}
@@ -160,40 +118,43 @@ export default function AutocompleteInput({
         />
       </div>
 
-      {open ? (
+      {open && items.length > 0 ? (
         <div
           id={listId}
           role="listbox"
-          className="absolute left-0 right-0 top-[calc(100%+6px)] z-30 max-h-60 overflow-auto rounded-md border border-border bg-white shadow-lg"
+          className="absolute left-0 right-0 lg:left-0 lg:right-auto lg:min-w-[340px] top-[calc(100%+8px)] z-50 max-h-[320px] overflow-auto rounded-lg border border-border bg-white shadow-2 animate-in fade-in zoom-in-95 duration-100"
         >
-          {loading ? (
-            <div className="px-3 py-2 text-sm text-muted">Searching…</div>
-          ) : null}
-          {!loading && items.length === 0 ? (
-            <div className="px-3 py-2 text-sm text-muted">
-              {emptyText || "No results found."}
-            </div>
-          ) : null}
+          <div className="p-3 border-b border-subtle bg-subtle/30 text-[10px] font-bold text-muted uppercase tracking-wider">
+            Matching Airports
+          </div>
           {items.map((item, index) => (
             <button
-              key={item.id}
+              key={`${item.id}-${index}`}
               role="option"
               aria-selected={highlighted === index}
               onMouseDown={(event) => event.preventDefault()}
-              onClick={() => {
-                setValue(item.label);
-                onSelect?.(item.label);
-                setOpen(false);
-              }}
-              className={`flex w-full flex-col gap-1 px-3 py-2 text-left text-sm transition ${
-                highlighted === index ? "bg-primary/10" : "hover:bg-primary/5"
+              onClick={() => handleSelect(item)}
+              className={`flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-all ${
+                highlighted === index ? "bg-primary/10 pl-5 border-l-4 border-link" : "hover:bg-subtle/50"
               }`}
               type="button"
             >
-              <span className="font-medium text-text">{item.label}</span>
-              {item.category ? (
-                <span className="text-xs text-muted">{item.category}</span>
-              ) : null}
+              <div className="flex items-center gap-3 overflow-hidden">
+                <div className={`p-2 rounded-full transition-colors ${highlighted === index ? "bg-link text-white" : "bg-subtle text-muted"}`}>
+                  <FiNavigation className="w-3.5 h-3.5 rotate-45" />
+                </div>
+                <div className="flex flex-col overflow-hidden">
+                  <span className="font-bold text-sm text-text truncate">
+                    {item.city}, {item.country}
+                  </span>
+                  <span className="text-[11px] text-muted truncate">
+                    {item.name}
+                  </span>
+                </div>
+              </div>
+              <span className={`text-xs font-black px-2 py-1 rounded shrink-0 transition-colors ${highlighted === index ? "bg-link text-white" : "bg-link/10 text-link"}`}>
+                {item.iata}
+              </span>
             </button>
           ))}
         </div>
