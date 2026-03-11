@@ -2,6 +2,8 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { fetchCities } from "@/api/city";
 import {
   FiCalendar,
   FiCheck,
@@ -76,13 +78,24 @@ function RoomGuestSelector({ value, onChange, onDone }) {
 
 export default function HeroSearch({
   isReserving,
-  roomName,
-  roomUrl,
   fixedCity,
   hideLocationField = false,
   defaultOneNight = false,
 }) {
-  const [city, setCity] = useState(SAUDI_CITIES[0]);
+  const { data: cityData } = useQuery({
+    queryKey: ["cities"],
+    queryFn: fetchCities,
+  });
+
+  const cities = useMemo(() => {
+    return (
+      cityData?.featuredCity?.map(
+        (city) => city.name || city.attributes?.name,
+      ) || SAUDI_CITIES
+    );
+  }, [cityData]);
+
+  const [city, setCity] = useState(cities[0]);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState({
@@ -90,10 +103,16 @@ export default function HeroSearch({
     children: 0,
     rooms: 1,
   });
-  const [travelingWithPets, setTravelingWithPets] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const router = useRouter();
   const { updateData, data } = useSearchContext();
+
+  // Update initial city when dynamic cities are loaded
+  useEffect(() => {
+    if (cities.length > 0 && !isReserving && !data?.city) {
+      setCity(cities[0]);
+    }
+  }, [cities, isReserving, data?.city]);
 
   // Add useEffect to pre-fill form fields when isReserving is true and data is available
   useEffect(() => {
@@ -109,14 +128,14 @@ export default function HeroSearch({
         return `${y}-${m}-${d}`;
       };
 
-      setCity(fixedCity || data.city || SAUDI_CITIES[0]);
+      setCity(fixedCity || data.city || cities[0]);
       setCheckIn(data.checkIn || (defaultOneNight ? formatIso(todayDate) : ""));
       setCheckOut(
         data.checkOut || (defaultOneNight ? formatIso(tomorrowDate) : ""),
       );
       setGuests(data.guests || { adults: 2, children: 0, rooms: 1 });
     }
-  }, [isReserving, data, fixedCity, defaultOneNight]);
+  }, [isReserving, data, fixedCity, defaultOneNight, cities]);
 
   const today = useMemo(() => new Date(), []);
   const calendar = useMemo(() => {
@@ -275,12 +294,12 @@ export default function HeroSearch({
                           Trending destinations
                         </p>
                         <div className="mt-2 rounded-sm border border-border">
-                          {SAUDI_CITIES.map((item, index) => (
+                          {cities.map((item, index) => (
                             <button
                               key={item}
                               type="button"
                               className={`flex w-full items-center gap-2 px-2 py-2 text-left text-sm ${
-                                index !== SAUDI_CITIES.length - 1
+                                index !== cities.length - 1
                                   ? "border-b border-border"
                                   : ""
                               }`}
