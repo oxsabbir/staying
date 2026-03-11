@@ -10,11 +10,11 @@ export const getProperty = async (propertyId) => {
   return res.data.data;
 };
 
-export const getPropertiesByCity = async (citySlug) => {
+export const getPropertiesByCity = async (citySlug, page = 1, pageSize = 10) => {
   const res = await api.get(
-    `/properties?filters[city][slug][$eq]=${citySlug}&populate=*`,
+    `/properties?filters[city][slug][$eq]=${citySlug}&populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}`,
   );
-  return res.data.data;
+  return res.data;
 };
 
 export const getPropertyBySlug = async (slug) => {
@@ -25,4 +25,11 @@ export const getPropertyBySlug = async (slug) => {
 export const getPropertySlugs = async () => {
   const res = await api.get("/properties?fields[0]=slug");
   return res.data.data?.map((p) => p.slug || p.attributes?.slug) || [];
+};
+
+export const searchProperties = async (query) => {
+  const res = await api.get(
+    `/properties?filters[name][$containsi]=${query}&populate=*`,
+  );
+  return res.data.data;
 };

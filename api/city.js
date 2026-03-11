@@ -16,3 +16,10 @@ export const getCitySlugs = async () => {
   const res = await api.get("/cities?fields[0]=slug");
   return res.data.data?.map((city) => city.slug || city.attributes?.slug) || [];
 };
+
+export const searchCities = async (query) => {
+  const res = await api.get(
+    `/cities?filters[name][$containsi]=${query}&populate=*`,
+  );
+  return res.data.data;
+};

@@ -1,15 +1,18 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { fetchCities } from "@/api/city";
+import { fetchCities, searchCities } from "@/api/city";
+import { searchProperties } from "@/api/property";
 import {
   FiCalendar,
   FiCheck,
   FiMapPin,
   FiSearch,
   FiUsers,
+  FiHome,
+  FiLoader,
 } from "react-icons/fi";
 import { useSearchContext } from "../../context/SearchContext";
 
@@ -92,15 +95,20 @@ export default function HeroSearch({
       return cityData.featuredCity.map((c) => ({
         name: c.name || c.attributes?.name,
         slug: c.slug || c.attributes?.slug || (c.name || c.attributes?.name)?.toLowerCase().replace(/\s+/g, "-"),
+        type: "city",
       }));
     }
     return SAUDI_CITIES.map((name) => ({
       name,
       slug: name.toLowerCase().replace(/\s+/g, "-"),
+      type: "city",
     }));
   }, [cityData]);
 
-  const [city, setCity] = useState(cities[0]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState({ cities: [], properties: [] });
+  const [isSearching, setIsSearching] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState({
@@ -111,13 +119,15 @@ export default function HeroSearch({
   const [openDropdown, setOpenDropdown] = useState(null);
   const router = useRouter();
   const { updateData, data } = useSearchContext();
+  const searchTimeoutRef = useRef(null);
 
   // Update initial city when dynamic cities are loaded
   useEffect(() => {
-    if (cities.length > 0 && !isReserving && !data?.city) {
-      setCity(cities[0]);
+    if (cities.length > 0 && !isReserving && !data?.city && !selectedItem) {
+      setSelectedItem(cities[0]);
+      setSearchQuery(cities[0].name);
     }
-  }, [cities, isReserving, data?.city]);
+  }, [cities, isReserving, data?.city, selectedItem]);
 
   // Add useEffect to pre-fill form fields when isReserving is true and data is available
   useEffect(() => {
@@ -135,7 +145,8 @@ export default function HeroSearch({
 
       const cityToSet = fixedCity || data.city || cities[0]?.name;
       const matchedCity = cities.find(c => c.name === cityToSet) || cities[0];
-      setCity(matchedCity);
+      setSelectedItem(matchedCity);
+      setSearchQuery(matchedCity?.name || "");
       
       setCheckIn(data.checkIn || (defaultOneNight ? formatIso(todayDate) : ""));
       setCheckOut(
@@ -144,6 +155,42 @@ export default function HeroSearch({
       setGuests(data.guests || { adults: 2, children: 0, rooms: 1 });
     }
   }, [isReserving, data, fixedCity, defaultOneNight, cities]);
+
+  useEffect(() => {
+    if (searchQuery.length > 1 && openDropdown === "city") {
+      setIsSearching(true);
+      if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+      
+      searchTimeoutRef.current = setTimeout(async () => {
+        try {
+          const [cityRes, propRes] = await Promise.all([
+            searchCities(searchQuery),
+            searchProperties(searchQuery)
+          ]);
+          
+          setSearchResults({
+            cities: cityRes.map(c => ({
+              name: c.name || c.attributes?.name,
+              slug: c.slug || c.attributes?.slug,
+              type: "city"
+            })),
+            properties: propRes.map(p => ({
+              name: p.name || p.attributes?.name,
+              slug: p.slug || p.attributes?.slug,
+              type: "property"
+            }))
+          });
+        } catch (error) {
+          console.error("Search failed:", error);
+        } finally {
+          setIsSearching(false);
+        }
+      }, 500);
+    } else {
+      setSearchResults({ cities: [], properties: [] });
+      setIsSearching(false);
+    }
+  }, [searchQuery, openDropdown]);
 
   const today = useMemo(() => new Date(), []);
   const calendar = useMemo(() => {
@@ -224,21 +271,27 @@ export default function HeroSearch({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const citySlug = city?.slug;
+    if (!selectedItem) return;
+
     updateData({
-      city: city?.name,
+      city: selectedItem.type === "city" ? selectedItem.name : "",
       checkIn,
       checkOut,
       totalGuest: guests.adults + guests.children,
       guests: guests,
     });
-    router.push(`/places/${citySlug}`);
+
+    if (selectedItem.type === "city") {
+      router.push(`/places/${selectedItem.slug}`);
+    } else {
+      router.push(`/rooms/${selectedItem.slug}`);
+    }
   };
 
   const handleApplyChange = (event) => {
     event.preventDefault();
     updateData({
-      city: city?.name,
+      city: selectedItem?.name,
       checkIn,
       checkOut,
       totalGuest: guests.adults + guests.children,
@@ -281,51 +334,117 @@ export default function HeroSearch({
               <div className="relative flex min-h-[52px] items-center gap-2 rounded-sm bg-white px-3 py-2 text-muted">
                 <FiMapPin size={24} />
                 {isReserving ? (
-                  <div className="w-full text-text">{city?.name}</div>
+                  <div className="w-full text-text">{selectedItem?.name}</div>
                 ) : (
                   <>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setOpenDropdown((current) =>
-                          current === "city" ? null : "city",
-                        )
-                      }
-                      className="flex w-full items-center justify-between text-left text-text"
-                    >
-                      <span>{city?.name}</span>
-                      <span className="text-xs text-muted">▾</span>
-                    </button>
+                    <input
+                      type="text"
+                      className="w-full bg-transparent text-text outline-none placeholder:text-muted/60"
+                      placeholder="Where are you going?"
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setOpenDropdown("city");
+                      }}
+                      onFocus={() => setOpenDropdown("city")}
+                    />
                     {openDropdown === "city" && (
-                      <div className="absolute left-0 top-full z-20 mt-3 w-[280px] max-h-[400px] overflow-auto rounded-md border border-border bg-white p-3 text-text shadow-lg">
-                        <p className="text-xs font-semibold uppercase text-muted">
-                          Trending destinations
-                        </p>
-                        <div className="mt-2 rounded-sm border border-border">
-                          {cities.map((item, index) => (
-                            <button
-                              key={item.slug}
-                              type="button"
-                              className={`flex w-full items-center gap-2 px-2 py-2 text-left text-sm ${
-                                index !== cities.length - 1
-                                  ? "border-b border-border"
-                                  : ""
-                              }`}
-                              onClick={() => {
-                                setCity(item);
-                                setOpenDropdown(null);
-                              }}
-                            >
-                              <FiMapPin className="text-muted" />
-                              <div>
-                                <p className="font-semibold">{item.name}</p>
-                                <p className="text-xs text-muted">
-                                  Saudi Arabia
+                      <div className="absolute left-0 top-full z-20 mt-3 w-[300px] max-h-[400px] overflow-auto rounded-md border border-border bg-white p-3 text-text shadow-lg">
+                        {isSearching ? (
+                          <div className="flex items-center justify-center py-4">
+                            <FiLoader className="animate-spin text-link" size={24} />
+                          </div>
+                        ) : searchQuery.length > 1 && searchResults.cities.length === 0 && searchResults.properties.length === 0 ? (
+                          <div className="py-2 text-center text-sm text-muted">
+                            No destinations or properties found
+                          </div>
+                        ) : (
+                          <>
+                            {searchQuery.length <= 1 && (
+                              <>
+                                <p className="text-xs font-semibold uppercase text-muted">
+                                  Trending destinations
                                 </p>
+                                <div className="mt-2 rounded-sm border border-border">
+                                  {cities.map((item, index) => (
+                                    <button
+                                      key={item.slug}
+                                      type="button"
+                                      className={`flex w-full items-center gap-2 px-2 py-2 text-left text-sm ${
+                                        index !== cities.length - 1
+                                          ? "border-b border-border"
+                                          : ""
+                                      }`}
+                                      onClick={() => {
+                                        setSelectedItem(item);
+                                        setSearchQuery(item.name);
+                                        setOpenDropdown(null);
+                                      }}
+                                    >
+                                      <FiMapPin className="text-muted" />
+                                      <div>
+                                        <p className="font-semibold">{item.name}</p>
+                                        <p className="text-xs text-muted">Saudi Arabia</p>
+                                      </div>
+                                    </button>
+                                  ))}
+                                </div>
+                              </>
+                            )}
+                            {(searchResults.cities.length > 0 || searchResults.properties.length > 0) && (
+                              <div className="space-y-4">
+                                {searchResults.cities.length > 0 && (
+                                  <div>
+                                    <p className="text-xs font-semibold uppercase text-muted">Destinations</p>
+                                    <div className="mt-2 rounded-sm border border-border">
+                                      {searchResults.cities.map((item, index) => (
+                                        <button
+                                          key={item.slug}
+                                          type="button"
+                                          className={`flex w-full items-center gap-2 px-2 py-2 text-left text-sm ${
+                                            index !== searchResults.cities.length - 1 ? "border-b border-border" : ""
+                                          }`}
+                                          onClick={() => {
+                                            setSelectedItem(item);
+                                            setSearchQuery(item.name);
+                                            setOpenDropdown(null);
+                                          }}
+                                        >
+                                          <FiMapPin className="text-muted" />
+                                          <p className="font-semibold">{item.name}</p>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                                {searchResults.properties.length > 0 && (
+                                  <div>
+                                    <p className="text-xs font-semibold uppercase text-muted">Properties</p>
+                                    <div className="mt-2 rounded-sm border border-border">
+                                      {searchResults.properties.map((item, index) => (
+                                        <button
+                                          key={item.slug}
+                                          type="button"
+                                          className={`flex w-full items-center gap-2 px-2 py-2 text-left text-sm ${
+                                            index !== searchResults.properties.length - 1 ? "border-b border-border" : ""
+                                          }`}
+                                          onClick={() => {
+                                            setSelectedItem(item);
+                                            setSearchQuery(item.name);
+                                            setOpenDropdown(null);
+                                          }}
+                                        >
+                                          <FiHome className="text-muted" />
+                                          <p className="font-semibold">{item.name}</p>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
                               </div>
-                            </button>
-                          ))}
-                        </div>
+                            )}
+                          </>
+                        )}
                       </div>
                     )}
                   </>

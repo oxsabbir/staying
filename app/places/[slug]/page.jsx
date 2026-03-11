@@ -21,15 +21,18 @@ export async function generateStaticParams() {
 export default async function PlacePage({ params }) {
   const { slug } = await params;
 
-  // Fetch city info and properties from API
-  const [cityData, propertiesData] = await Promise.all([
+  // Fetch city info and properties from API (page 1, pageSize 1 for testing)
+  const [cityData, propertiesResponse] = await Promise.all([
     getCityBySlug(slug),
-    getPropertiesByCity(slug),
+    getPropertiesByCity(slug, 1, 1),
   ]);
 
   if (!cityData) {
     notFound();
   }
+
+  const propertiesData = propertiesResponse.data;
+  const pagination = propertiesResponse.meta?.pagination;
 
   // Format the city data to match what PlacesClient expects
   const place = {
