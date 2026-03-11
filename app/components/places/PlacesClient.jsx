@@ -490,10 +490,12 @@ export default function PlacesClient({
                   </div>
                 ) : null}
 
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={pagination.pageCount || 1}
-                />
+                {pagination.pageCount > 1 && filtered.length > 0 && (
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={pagination.pageCount}
+                  />
+                )}
               </>
             )}
           </div>
