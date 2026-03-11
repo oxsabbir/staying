@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { FiShield, FiClock, FiZap, FiMapPin, FiCalendar, FiCheckCircle, FiUsers } from "react-icons/fi";
+import {
+  FiShield,
+  FiClock,
+  FiZap,
+  FiMapPin,
+  FiCalendar,
+  FiCheckCircle,
+  FiUsers,
+} from "react-icons/fi";
 import { HeaderNav, SiteFooter } from "../components/home";
 import AutocompleteInput from "../components/shared/AutocompleteInput";
 import {
@@ -93,7 +101,7 @@ export default function FlightsPage() {
             Hajj and Umrah flight packages tailored for your comfort.
           </p>
         </div>
-        
+
         {/* Abstract Background Element */}
         <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl"></div>
       </section>
@@ -151,9 +159,14 @@ export default function FlightsPage() {
                   endDate={form.tripType === "One-way" ? "" : form.returnDate}
                   onChange={({ startDate, endDate }) => {
                     setField("departureDate", startDate);
-                    setField("returnDate", form.tripType === "One-way" ? "" : endDate);
+                    setField(
+                      "returnDate",
+                      form.tripType === "One-way" ? "" : endDate,
+                    );
                   }}
-                  placeholder={form.tripType === "One-way" ? "Add date" : "Add dates"}
+                  placeholder={
+                    form.tripType === "One-way" ? "Add date" : "Add dates"
+                  }
                   singleDateMode={form.tripType === "One-way"}
                   wrapperClassName="w-full"
                 />
@@ -172,7 +185,9 @@ export default function FlightsPage() {
                   type="submit"
                   disabled={!isFormValid}
                   className={`w-full lg:w-auto px-10 py-4 h-full rounded-lg text-sm font-bold text-white transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 ${
-                    isFormValid ? "bg-link hover:bg-[#005dc1]" : "cursor-not-allowed bg-blue-600/50"
+                    isFormValid
+                      ? "bg-link hover:bg-[#005dc1]"
+                      : "cursor-not-allowed bg-blue-600/50"
                   }`}
                 >
                   Search
@@ -185,65 +200,50 @@ export default function FlightsPage() {
         {/* Why Choose Us Section */}
         <section className="mt-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Specialized for Pilgrimage</h2>
-            <p className="text-muted max-w-[600px] mx-auto">We understand the unique needs of Hajj and Umrah travelers, offering services that make your spiritual journey comfortable and stress-free.</p>
+            <h2 className="text-3xl font-bold mb-4">
+              Specialized for Pilgrimage
+            </h2>
+            <p className="text-muted max-w-[600px] mx-auto">
+              We understand the unique needs of Hajj and Umrah travelers,
+              offering services that make your spiritual journey comfortable and
+              stress-free.
+            </p>
           </div>
-          
+
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
                 icon: <FiShield className="w-6 h-6" />,
                 title: "Flexible Bookings",
                 desc: "Changes and cancellations handled specifically for pilgrimage-related requirements and visa delays.",
-                color: "bg-blue-50 text-link"
+                color: "bg-blue-50 text-link",
               },
               {
                 icon: <FiClock className="w-6 h-6" />,
                 title: "24/7 Dedicated Support",
                 desc: "Our team is available round the clock to assist with your flights while you are in Saudi Arabia.",
-                color: "bg-green-50 text-green-600"
+                color: "bg-green-50 text-green-600",
               },
               {
                 icon: <FiZap className="w-6 h-6" />,
                 title: "Direct Haram Access",
                 desc: "We prioritize flight options that align with hotel check-ins near the Haram in Mecca and Medina.",
-                color: "bg-accent/10 text-accent"
-              }
+                color: "bg-accent/10 text-accent",
+              },
             ].map((feature, i) => (
-              <div key={i} className="bg-white p-8 rounded-xl border border-border shadow-sm hover:shadow-md transition-shadow">
-                <div className={`w-12 h-12 rounded-full ${feature.color} flex items-center justify-center mb-6`}>
+              <div
+                key={i}
+                className="bg-white p-8 rounded-xl border border-border shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div
+                  className={`w-12 h-12 rounded-full ${feature.color} flex items-center justify-center mb-6`}
+                >
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                <p className="text-muted leading-relaxed text-sm">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Popular Saudi Destinations */}
-        <section className="mt-24">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold">Popular Saudi Destinations</h2>
-            <div className="h-px bg-border flex-1 mx-8 hidden sm:block"></div>
-            <button className="text-link font-bold text-sm hover:underline">View all cities</button>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { city: "Jeddah", label: "Gate to Mecca", img: "/images/destinations/jeddah.jpg" },
-              { city: "Madinah", label: "Prophet's City", img: "/images/destinations/medina.jpg" },
-              { city: "Riyadh", label: "The Capital", img: "/images/destinations/riyadh.jpg" },
-              { city: "Dammam", label: "Gulf Gateway", img: "/images/destinations/dammam.jpg" }
-            ].map((dest, i) => (
-              <div key={i} className="group relative h-[300px] rounded-xl overflow-hidden cursor-pointer">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
-                {/* Fallback color if image doesn't exist */}
-                <div className="absolute inset-0 bg-primary/20"></div>
-                <div className="absolute bottom-0 left-0 p-6 z-20 transition-transform group-hover:-translate-y-2">
-                  <p className="text-xs font-bold text-accent uppercase tracking-widest mb-1">{dest.label}</p>
-                  <h3 className="text-2xl font-bold text-white">{dest.city}</h3>
-                </div>
+                <p className="text-muted leading-relaxed text-sm">
+                  {feature.desc}
+                </p>
               </div>
             ))}
           </div>
@@ -254,14 +254,17 @@ export default function FlightsPage() {
           <div className="max-w-[700px] space-y-6 relative z-10">
             <h2 className="text-3xl font-bold">Ready to start your journey?</h2>
             <p className="text-muted leading-relaxed">
-              Our experts are ready to find the most cost-effective and comfortable flight options for you. Booking via WhatsApp ensures personalized service and immediate assistance.
+              Our experts are ready to find the most cost-effective and
+              comfortable flight options for you. Booking via WhatsApp ensures
+              personalized service and immediate assistance.
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <FiCheckCircle className="text-green-600" /> No hidden fees
               </div>
               <div className="flex items-center gap-2 text-sm font-semibold">
-                <FiCheckCircle className="text-green-600" /> Best price guarantee
+                <FiCheckCircle className="text-green-600" /> Best price
+                guarantee
               </div>
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <FiCheckCircle className="text-green-600" /> Pilgrim support
@@ -269,7 +272,7 @@ export default function FlightsPage() {
             </div>
           </div>
           <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-10 opacity-10 hidden xl:block">
-             <FiZap className="w-64 h-64" />
+            <FiZap className="w-64 h-64" />
           </div>
         </section>
       </main>
