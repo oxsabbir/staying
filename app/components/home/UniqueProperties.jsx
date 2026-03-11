@@ -1,16 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { roomData } from "../../../data/room_data";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUniqueProperties } from "@/api/city";
 import PropertySlider from "../shared/PropertySlider";
 
-export default function UniqueProperties() {
-  const [randomProperties, setRandomProperties] = useState([]);
+const SkeletonItem = ({ className }) => (
+  <div className={`animate-pulse rounded-sm bg-gray-200 ${className}`}></div>
+);
 
-  useEffect(() => {
-    // Simple shuffle and slice to get 10 random items
-    setRandomProperties(roomData.slice(0, 6));
-  }, []);
+export default function UniqueProperties() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["uniqueProperties"],
+    queryFn: fetchUniqueProperties,
+  });
+
+  if (error) return null;
+
+  const properties = data || [];
 
   return (
     <section className="py-8">
@@ -22,7 +28,20 @@ export default function UniqueProperties() {
           From castles and villas to boats and igloos, we have it all
         </p>
         <div className="mt-4">
-          <PropertySlider items={randomProperties} />
+          {isLoading ? (
+            <div className="grid grid-cols-4 gap-4">
+              <SkeletonItem className="h-56" />
+              <SkeletonItem className="h-56" />
+              <SkeletonItem className="h-56" />
+              <SkeletonItem className="h-56" />
+            </div>
+          ) : properties.length === 0 ? (
+            <div className="rounded-sm border border-dashed border-border p-8 text-center text-muted">
+              No properties available at the moment.
+            </div>
+          ) : (
+            <PropertySlider items={properties} navId="unique-properties" />
+          )}
         </div>
       </div>
     </section>
