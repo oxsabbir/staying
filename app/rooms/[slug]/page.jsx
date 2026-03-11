@@ -30,6 +30,7 @@ export default async function RoomPage({ params }) {
     ratingLabel: attr.ratingLabel,
     reviewCount: attr.totalReview || attr.reviewCount || 0,
     overview: attr.description,
+    propertyDetails: attr.propertyDetails,
     facts: [
       { label: "Property Type", value: attr.propertyType },
       { label: "Deal Type", value: attr.dealType },
