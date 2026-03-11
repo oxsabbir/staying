@@ -88,11 +88,16 @@ export default function HeroSearch({
   });
 
   const cities = useMemo(() => {
-    return (
-      cityData?.featuredCity?.map(
-        (city) => city.name || city.attributes?.name,
-      ) || SAUDI_CITIES
-    );
+    if (cityData?.featuredCity) {
+      return cityData.featuredCity.map((c) => ({
+        name: c.name || c.attributes?.name,
+        slug: c.slug || c.attributes?.slug || (c.name || c.attributes?.name)?.toLowerCase().replace(/\s+/g, "-"),
+      }));
+    }
+    return SAUDI_CITIES.map((name) => ({
+      name,
+      slug: name.toLowerCase().replace(/\s+/g, "-"),
+    }));
   }, [cityData]);
 
   const [city, setCity] = useState(cities[0]);
@@ -128,7 +133,10 @@ export default function HeroSearch({
         return `${y}-${m}-${d}`;
       };
 
-      setCity(fixedCity || data.city || cities[0]);
+      const cityToSet = fixedCity || data.city || cities[0]?.name;
+      const matchedCity = cities.find(c => c.name === cityToSet) || cities[0];
+      setCity(matchedCity);
+      
       setCheckIn(data.checkIn || (defaultOneNight ? formatIso(todayDate) : ""));
       setCheckOut(
         data.checkOut || (defaultOneNight ? formatIso(tomorrowDate) : ""),
@@ -216,9 +224,9 @@ export default function HeroSearch({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const citySlug = city.toLowerCase().replace(/\s+/g, "-");
+    const citySlug = city?.slug;
     updateData({
-      city: city,
+      city: city?.name,
       checkIn,
       checkOut,
       totalGuest: guests.adults + guests.children,
@@ -230,7 +238,7 @@ export default function HeroSearch({
   const handleApplyChange = (event) => {
     event.preventDefault();
     updateData({
-      city,
+      city: city?.name,
       checkIn,
       checkOut,
       totalGuest: guests.adults + guests.children,
@@ -273,7 +281,7 @@ export default function HeroSearch({
               <div className="relative flex min-h-[52px] items-center gap-2 rounded-sm bg-white px-3 py-2 text-muted">
                 <FiMapPin size={24} />
                 {isReserving ? (
-                  <div className="w-full text-text">{city}</div>
+                  <div className="w-full text-text">{city?.name}</div>
                 ) : (
                   <>
                     <button
@@ -285,7 +293,7 @@ export default function HeroSearch({
                       }
                       className="flex w-full items-center justify-between text-left text-text"
                     >
-                      <span>{city}</span>
+                      <span>{city?.name}</span>
                       <span className="text-xs text-muted">▾</span>
                     </button>
                     {openDropdown === "city" && (
@@ -296,7 +304,7 @@ export default function HeroSearch({
                         <div className="mt-2 rounded-sm border border-border">
                           {cities.map((item, index) => (
                             <button
-                              key={item}
+                              key={item.slug}
                               type="button"
                               className={`flex w-full items-center gap-2 px-2 py-2 text-left text-sm ${
                                 index !== cities.length - 1
@@ -310,7 +318,7 @@ export default function HeroSearch({
                             >
                               <FiMapPin className="text-muted" />
                               <div>
-                                <p className="font-semibold">{item}</p>
+                                <p className="font-semibold">{item.name}</p>
                                 <p className="text-xs text-muted">
                                   Saudi Arabia
                                 </p>

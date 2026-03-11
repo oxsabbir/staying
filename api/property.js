@@ -16,3 +16,13 @@ export const getPropertiesByCity = async (citySlug) => {
   );
   return res.data.data;
 };
+
+export const getPropertyBySlug = async (slug) => {
+  const res = await api.get(`/properties?filters[slug][$eq]=${slug}&populate=*`);
+  return res.data.data?.[0];
+};
+
+export const getPropertySlugs = async () => {
+  const res = await api.get("/properties?fields[0]=slug");
+  return res.data.data?.map((p) => p.slug || p.attributes?.slug) || [];
+};
