@@ -9,23 +9,22 @@ const SkeletonItem = ({ className }) => (
 );
 
 export default function TrendingDestinations() {
-  const {
-    data: cities,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["cities"],
     queryFn: fetchCities,
   });
 
   if (error) return null; // Or handle error gracefully
 
+  const cities = data?.featuredCity;
   const destinations =
     cities?.map((city) => ({
       name: city.name || city.attributes?.name,
       link: `/places/${city.name?.toLowerCase() || city.attributes?.slug}`,
-      image: `${process.env.NEXT_PUBLIC_API_URL}${city.coverImage?.url || city.attributes?.coverImage?.data?.attributes?.url || "/images/placeholder.jpg"}`,
+      image: `${city.coverImage?.url || "/images/placeholder.jpg"}`,
     })) || [];
+
+  console.log(destinations);
 
   return (
     <section className="py-8">
