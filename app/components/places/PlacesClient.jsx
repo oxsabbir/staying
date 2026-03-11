@@ -3,18 +3,17 @@
 import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
 import { FiChevronDown, FiHeart, FiMapPin } from "react-icons/fi";
-import { roomData } from "../../../data/room_data";
 import { useSearchContext } from "../../context/SearchContext";
 import Wishlist from "../shared/Wishlist";
 const navPill =
   "rounded-full border border-primary/30 px-3 py-2 text-xs font-medium text-primary";
 
-const formatPrice = (value) => `SAR ${value.toLocaleString("en-US")}`;
+const formatPrice = (value) => `SAR ${value?.toLocaleString("en-US") || 0}`;
 
 function Breadcrumbs({ place }) {
   return (
     <div className="text-xs md:text-sm font-medium text-gray-700">
-      Home / {place.country} / {place.region} / {place.name} / Search results
+      Home / {place.country || "Saudi Arabia"} / {place.region || "Middle East"} / {place.name} / Search results
     </div>
   );
 }
@@ -27,16 +26,16 @@ function SearchBar({ place }) {
         <div className="flex items-center gap-2 rounded-md border border-accent/60 px-3 py-2">
           <FiMapPin className="text-primary" />
           <p className="w-full text-sm outline-none" aria-label="Destination">
-            {data.city}
+            {data.city || place.name}
           </p>
         </div>
         <div className="flex items-center gap-2 rounded-md border border-accent/60 px-3 py-2">
-          <span className="text-sm ">Check In {data.checkIn}</span>
+          <span className="text-sm ">Check In {data.checkIn || "Not set"}</span>
           <span className="text-sm ">—</span>
-          <span className="text-sm ">Check Out {data.checkOut}</span>
+          <span className="text-sm ">Check Out {data.checkOut || "Not set"}</span>
         </div>
         <div className="flex items-center gap-2 rounded-md border border-accent/60 px-3 py-2">
-          <span className="text-sm ">Total Guest : {data.totalGuest}</span>
+          <span className="text-sm ">Total Guest : {data.totalGuest || 0}</span>
         </div>
       </div>
     </div>
@@ -57,15 +56,17 @@ function Filters({
     <aside className="space-y-4">
       <div className="rounded-lg border border-border bg-white p-3 shadow-sm">
         <div className="h-[180px] rounded-xs ">
-          <iframe
-            src={place.summary.mapLink}
-            width="100%"
-            height="180"
-            style={{ border: 0 }}
-            allowFullScreen=""
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
+          {place.summary?.mapLink && (
+            <iframe
+              src={place.summary.mapLink}
+              width="100%"
+              height="180"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
+          )}
         </div>
       </div>
 
@@ -115,8 +116,7 @@ function Filters({
       </div>
 
       <div className="rounded-lg border border-border bg-white p-3 text-xs text-muted shadow-sm">
-        Flexible booking for a static site. Filters update instantly with your
-        local data.
+        Flexible booking. Filters update instantly based on available properties.
       </div>
     </aside>
   );
@@ -126,17 +126,13 @@ function PropertyCard({ property }) {
   return (
     <div className="rounded-lg border border-border bg-white p-4 shadow-sm">
       <div className="grid gap-4 lg:grid-cols-[220px_1fr]">
-        <Link href={`/rooms/${property.id}`}>
+        <Link href={`/rooms/${property.slug}`}>
           <div className="relative">
             <img
-              src={property.image?.[0]}
+              src={property.image?.[0] || "/images/hotels/placeholder.jpg"}
               alt={property.name}
               className="h-52 w-full rounded-md object-cover sm:h-48 lg:h-44"
             />
-
-            {/* <div className="absolute right-2 top-2 rounded-full bg-white shadow">
-              <Wishlist />
-            </div> */}
           </div>
         </Link>
 
@@ -146,7 +142,7 @@ function PropertyCard({ property }) {
               <h3 className="text-lg font-semibold text-link sm:text-xl">
                 {property.name}
               </h3>
-              <span className={navPill}>{property.dealLabel}</span>
+              {property.dealLabel && <span className={navPill}>{property.dealLabel}</span>}
               {property.genius ? (
                 <span className="rounded-full bg-primary/10 px-2 py-1 text-xs font-semibold text-primary">
                   Genius
@@ -160,7 +156,7 @@ function PropertyCard({ property }) {
             <div className="text-xs text-muted">{property.beds}</div>
 
             <div className="mt-3 flex flex-wrap gap-2 text-xs">
-              {property.perks.map((perk) => (
+              {property.perks?.map((perk) => (
                 <span
                   key={perk}
                   className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-700"
@@ -175,14 +171,14 @@ function PropertyCard({ property }) {
             <div className="flex items-start justify-between gap-4 sm:w-full lg:w-auto">
               <div className="text-left sm:text-right">
                 <div className="text-xs font-semibold text-muted">
-                  {property.ratingLabel}
+                  {property.ratingLabel || "Rating"}
                 </div>
                 <div className="text-xs text-muted">
-                  {property.reviewCount} reviews
+                  {property.reviewCount || 0} reviews
                 </div>
               </div>
               <div className="inline-flex items-center gap-1 rounded-md bg-primary px-2 py-1 text-xs font-semibold text-white">
-                {property.rating}
+                {property.rating || "0.0"}
               </div>
             </div>
 
@@ -200,7 +196,7 @@ function PropertyCard({ property }) {
               </div>
             </div>
 
-            <Link href={`/rooms/${property.id}`}>
+            <Link href={`/rooms/${property.slug}`}>
               <button className="w-full rounded-md bg-link px-4 py-2 text-sm font-semibold text-white sm:w-auto">
                 See availability
               </button>
@@ -212,14 +208,17 @@ function PropertyCard({ property }) {
   );
 }
 
-export default function PlacesClient({ place }) {
-  const properties = roomData.filter((p) => p.slug === place.slug) || [];
+export default function PlacesClient({ place, initialProperties = [] }) {
+  const properties = initialProperties;
   const prices = useMemo(
-    () => properties.map((property) => property.price),
+    () => properties.map((property) => property.price || 0),
     [properties],
   );
   const priceBounds = useMemo(
-    () => ({ min: Math.min(...prices), max: Math.max(...prices) }),
+    () => ({ 
+      min: prices.length > 0 ? Math.min(...prices) : 0, 
+      max: prices.length > 0 ? Math.max(...prices) : 1000 
+    }),
     [prices],
   );
 
@@ -237,23 +236,23 @@ export default function PlacesClient({ place }) {
 
   const filtered = useMemo(() => {
     const base = properties.filter((property) => {
-      if (property.price > maxPrice) return false;
-      if (freeCancellation && !property.perks.includes("Free cancellation"))
+      if ((property.price || 0) > maxPrice) return false;
+      if (freeCancellation && !property.perks?.includes("Free cancellation"))
         return false;
       if (breakfastIncluded && !property.breakfastIncluded) return false;
       return true;
     });
 
     if (sortBy === "price") {
-      return [...base].sort((a, b) => a.price - b.price);
+      return [...base].sort((a, b) => (a.price || 0) - (b.price || 0));
     }
 
     if (sortBy === "rating") {
-      return [...base].sort((a, b) => b.rating - a.rating);
+      return [...base].sort((a, b) => (b.rating || 0) - (a.rating || 0));
     }
 
-    return [...base].sort((a, b) => a.rank - b.rank);
-  }, [place.properties, maxPrice, freeCancellation, breakfastIncluded, sortBy]);
+    return [...base].sort((a, b) => (a.rank || 0) - (b.rank || 0));
+  }, [properties, maxPrice, freeCancellation, breakfastIncluded, sortBy]);
 
   return (
     <main className="container-wide pb-12 pt-6">
@@ -288,7 +287,7 @@ export default function PlacesClient({ place }) {
                       onChange={(event) => setSortBy(event.target.value)}
                       className="appearance-none rounded-md border border-border bg-white px-3 py-1 pr-7 text-xs"
                     >
-                      <option value="top">Our top picks</option>roomData
+                      <option value="top">Our top picks</option>
                       <option value="price">Price (lowest first)</option>
                       <option value="rating">Rating (high to low)</option>
                     </select>
