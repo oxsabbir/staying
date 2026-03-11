@@ -14,6 +14,8 @@ import {
   FiMail,
   FiCheck,
   FiInfo,
+  FiAlertCircle,
+  FiMinus,
 } from "react-icons/fi";
 import { roomSections } from "../../../data/roomDetails";
 import { GalleryPreview, GalleryModal } from "../../../app/components/gallery";
@@ -24,6 +26,7 @@ import { HeroSearch } from "../../components/home";
 import { useSearchContext } from "../../context/SearchContext";
 import HeaderNav from "../../components/home/HeaderNav";
 import MarkdownRenderer from "../../components/shared/MarkdownRenderer";
+import Accordion from "../../components/shared/Accordion";
 
 function ShareModal({ isOpen, onClose, url, propertyName }) {
   const [copied, setCopied] = useState(false);
@@ -304,7 +307,7 @@ export default function RoomDetailsClient({ initialProperty }) {
               </span>
             </div>
             <div className="grid gap-3 rounded-sm border border-border bg-bg p-4">
-              <h4 className="font-semibold">Property highlights</h4>
+              <h4 className="font-semibold text-sm">Property highlights</h4>
               <p className="text-sm text-muted">{room.overview}</p>
               <div className="grid gap-2 text-sm">
                 {room.facts?.map((fact) => (
@@ -415,7 +418,7 @@ export default function RoomDetailsClient({ initialProperty }) {
 
             {/* Right Column: Sidebar info */}
             <div className="space-y-6">
-              <div className="rounded-sm border border-border bg-white overflow-hidden sticky top-24">
+              <div className="rounded-sm border border-border bg-white overflow-hidden">
                 <div className="bg-subtle p-4 border-b border-border">
                   <h3 className="text-sm font-bold uppercase tracking-wide text-text flex items-center gap-2">
                     <FiCheckCircle className="text-link" />
@@ -474,39 +477,80 @@ export default function RoomDetailsClient({ initialProperty }) {
               hideLocationField={true}
               defaultOneNight={true}
             />
-            <div className="grid gap-3">
-              {room.availability?.rooms?.map((item) => (
-                <div
-                  key={item.type}
-                  className="flex flex-col justify-between gap-4 rounded-sm border border-border bg-bg p-4 md:flex-row md:items-center"
+            <div className="grid gap-6 mt-8">
+              {room.availability?.rooms?.map((item, idx) => (
+                <div 
+                  key={item.type + idx} 
+                  className="group bg-white border border-border rounded-sm overflow-hidden hover:shadow-2 transition-all duration-300 flex flex-col md:grid md:grid-cols-[1.2fr_1fr_220px]"
                 >
-                  <div>
-                    <h3 className="font-semibold">{item.type}</h3>
-                    <p className="my-1 text-sm text-muted">{item.beds}</p>
-                    <div className="flex flex-wrap gap-2 text-xs text-[#0a7a3b]">
-                      {item.perks?.map((perk) => (
-                        <span key={perk}>{perk}</span>
-                      ))}
+                  {/* Column 1: Room Details */}
+                  <div className="p-6 border-b md:border-b-0 md:border-r border-border">
+                    <h3 className="font-bold text-xl text-link hover:underline cursor-pointer mb-3">
+                      {item.type}
+                    </h3>
+                    
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 text-sm text-text">
+                        <span className="flex items-center gap-1.5 font-semibold bg-subtle px-2 py-1 rounded-xs">
+                          <FiUsers className="w-4 h-4" /> 
+                          {selectedAdults + selectedChildren} adults
+                        </span>
+                        <span className="text-muted">•</span>
+                        <span className="text-muted">{item.beds}</span>
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        {item.perks?.map((perk) => (
+                          <span 
+                            key={perk} 
+                            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#008009]"
+                          >
+                            <FiCheck className="w-3.5 h-3.5" /> 
+                            {perk}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                  <div className="grid gap-2 text-right md:justify-items-end">
-                    <strong>
-                      SAR{" "}
-                      {calculateTotalPrice(
-                        item.priceMultiplier || 1,
-                      ).toLocaleString()}
-                    </strong>
-                    <span className="text-xs text-muted">
-                      total for {selectedNights} night
-                      {selectedNights > 1 ? "s" : ""} · {selectedRooms} room
-                      {selectedRooms > 1 ? "s" : ""}
-                    </span>
+
+                  {/* Column 2: Selection & Benefits */}
+                  <div className="p-6 border-b md:border-b-0 md:border-r border-border bg-subtle/5">
+                    <div className="text-[10px] font-bold text-muted uppercase tracking-widest mb-4">Your selection includes:</div>
+                    <ul className="grid gap-3">
+                      <li className="flex items-center gap-3 text-sm text-text font-medium">
+                        <FiCheckCircle className="text-[#008009] w-4 h-4 shrink-0" />
+                        <span>Breakfast included</span>
+                      </li>
+                      <li className="flex items-center gap-3 text-sm text-text font-medium">
+                        <FiCheckCircle className="text-[#008009] w-4 h-4 shrink-0" />
+                        <span>Instant confirmation</span>
+                      </li>
+                      <li className="flex items-center gap-3 text-sm text-[#008009] font-bold">
+                        <FiCheckCircle className="w-4 h-4 shrink-0" />
+                        <span>No prepayment needed</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Column 3: Pricing & Action */}
+                  <div className="p-6 flex flex-col justify-center items-center md:items-end text-center md:text-right bg-white">
+                    <div className="mb-4">
+                      <div className="text-[10px] text-muted font-bold uppercase mb-1">Price for {selectedNights} night{selectedNights > 1 ? "s" : ""}</div>
+                      <div className="text-2xl font-black text-primary leading-none">
+                        SAR {calculateTotalPrice(item.priceMultiplier || 1).toLocaleString()}
+                      </div>
+                      <div className="text-[10px] text-muted mt-1 font-medium">
+                        +SAR 0 taxes and charges
+                      </div>
+                    </div>
+
                     <button
                       onClick={() => handleRoomReserve(item)}
-                      className="rounded-xs px-4 py-2 bg-[#008009] text-white text-sm font-semibold hover:bg-[#006407] transition-colors"
+                      className="w-full rounded-xs px-6 py-3 bg-link text-white text-sm font-bold hover:bg-link/90 transition-all shadow-sm active:scale-[0.98] flex items-center justify-center gap-2"
                     >
-                      Reserve Now
+                      I'll reserve
                     </button>
+                    <p className="text-[11px] text-muted mt-3">Confirmation is immediate</p>
                   </div>
                 </div>
               ))}
@@ -514,32 +558,83 @@ export default function RoomDetailsClient({ initialProperty }) {
           </div>
         </section>
 
-        <section className="container grid gap-4 py-6 md:grid-cols-3">
+        <section className="container grid gap-6 py-10 md:grid-cols-3">
           {roomSections.map((section) => (
             <div
               key={section.title}
-              className="rounded-sm border border-border bg-bg p-4"
+              className="rounded-sm border border-border bg-white p-6 shadow-1 hover:shadow-2 transition-shadow duration-300"
             >
-              <h3 className="font-semibold">{section.title}</h3>
-              <ul className="mt-2 grid gap-2 text-sm text-muted">
+              <h3 className="font-bold text-lg mb-4 text-primary border-b border-subtle pb-2">{section.title}</h3>
+              <ul className="grid gap-3 text-sm text-muted">
                 {section.items.map((item) => (
-                  <li key={item}>{item}</li>
+                  <li key={item} className="flex items-start gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent mt-1.5 shrink-0" />
+                    <span className="leading-tight">{item}</span>
+                  </li>
                 ))}
               </ul>
             </div>
           ))}
         </section>
 
-        <section className="container flex flex-col justify-between gap-4 pt-5 md:flex-row md:items-start">
-          <div>
-            <h2 className="text-[1.3rem] font-semibold">The fine print</h2>
-            <ul className="mt-3 grid gap-2 text-sm text-muted">
-              {room.finePrint?.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
+        <section className="bg-subtle/30 py-12 mt-10">
+          <div className="container">
+            <div className="grid gap-8 md:grid-cols-3 text-center">
+              <div className="space-y-3">
+                <div className="mx-auto w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-border">
+                  <FiCheckCircle className="text-green-600 w-6 h-6" />
+                </div>
+                <h4 className="font-bold text-lg">Verified Listings</h4>
+                <p className="text-sm text-muted">All properties on Staying.com are hand-picked and verified for quality and service.</p>
+              </div>
+              <div className="space-y-3">
+                <div className="mx-auto w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-border">
+                  <FiUsers className="text-link w-6 h-6" />
+                </div>
+                <h4 className="font-bold text-lg">Real Guest Reviews</h4>
+                <p className="text-sm text-muted">We only feature reviews from guests who have completed their stay at the property.</p>
+              </div>
+              <div className="space-y-3">
+                <div className="mx-auto w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-border">
+                  <FiSearch className="text-accent w-6 h-6" />
+                </div>
+                <h4 className="font-bold text-lg">Best Price Guarantee</h4>
+                <p className="text-sm text-muted">Found a lower price elsewhere? Contact our team via WhatsApp and we will match it.</p>
+              </div>
+            </div>
           </div>
         </section>
+
+        <section className="container py-12 border-t border-border mt-8">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-2xl font-bold mb-8 text-center text-primary">Frequently Asked Questions</h2>
+            <Accordion
+              items={[
+                {
+                  title: "How do I confirm my reservation?",
+                  body: "After you click 'Reserve', a WhatsApp message will be prepared with your booking details. Simply send the message to our team, and we will confirm availability and provide payment instructions to finalize your stay.",
+                },
+                {
+                  title: "Are the prices shown inclusive of taxes?",
+                  body: "Yes, the prices displayed on Staying.com generally include all applicable VAT and municipality fees in Saudi Arabia, so there are no hidden surprises at checkout.",
+                },
+                {
+                  title: "Can I request an early check-in or late check-out?",
+                  body: "Early check-in and late check-out are subject to availability and the hotel's policy. We recommend mentioning your request in the WhatsApp message during the reservation process so we can check with the property for you.",
+                },
+                {
+                  title: "What is the cancellation policy?",
+                  body: "Cancellation policies vary by room type and property. Many of our listings offer 'Free Cancellation' up to a certain date. Please check the specific terms listed under your chosen room's perks before confirming.",
+                },
+                {
+                  title: "Do you offer airport transfer services?",
+                  body: "We have a dedicated 'Airport Taxis' section on our website. You can also ask our support team via WhatsApp if the specific hotel you are booking provides its own shuttle service.",
+                },
+              ]}
+            />
+          </div>
+        </section>
+
       </main>
       <SiteFooter />
       <ShareModal

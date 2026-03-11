@@ -89,20 +89,27 @@ export default function HeaderNav() {
 
       <div className="w-full overflow-x-auto">
         <div className="container flex min-w-max gap-2 pb-3">
-          {navLinks.map((item) => (
-            <Link href={item.link} key={item.link}>
-              <div
-                className={`rounded-full border flex gap-3 whitespace-nowrap  items-center px-4 py-2 text-sm text-white ${
-                  pathname === item.link || (item.link === "/" && isStaysRoute)
-                    ? "border-white"
-                    : "border-transparent"
-                }`}
-              >
-                <item.icon size={20} />
-                {item.title}
-              </div>
-            </Link>
-          ))}
+          {navLinks.map((item) => {
+            const isActive =
+              item.link === "/"
+                ? isStaysRoute
+                : pathname === item.link || pathname.startsWith(item.link + "/");
+
+            return (
+              <Link href={item.link} key={item.link}>
+                <div
+                  className={`rounded-full border flex gap-3 whitespace-nowrap items-center px-4 py-2 text-sm transition-colors ${
+                    isActive
+                      ? "border-white bg-white/10 text-white font-medium"
+                      : "border-transparent text-white/80 hover:bg-white/5"
+                  }`}
+                >
+                  <item.icon size={20} />
+                  {item.title}
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
 
