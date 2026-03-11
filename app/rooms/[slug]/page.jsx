@@ -1,11 +1,6 @@
 import { notFound } from "next/navigation";
 import RoomDetailsClient from "./RoomDetailsClient";
-import { getPropertyBySlug, getPropertySlugs } from "@/api/property";
-
-export async function generateStaticParams() {
-  const slugs = await getPropertySlugs();
-  return slugs.map((slug) => ({ slug }));
-}
+import { getPropertyBySlug } from "@/api/property";
 
 export default async function RoomPage({ params }) {
   const resolvedParams = await params;

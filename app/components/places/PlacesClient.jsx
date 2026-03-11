@@ -1,19 +1,125 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, useEffect } from "react";
-import { FiChevronDown, FiHeart, FiMapPin } from "react-icons/fi";
+import { useMemo, useState, useEffect, useCallback } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import {
+  FiChevronDown,
+  FiHeart,
+  FiMapPin,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import { useSearchContext } from "../../context/SearchContext";
-import Wishlist from "../shared/Wishlist";
+import { getPropertiesByCity } from "@/api/property";
+
 const navPill =
   "rounded-full border border-primary/30 px-3 py-2 text-xs font-medium text-primary";
 
 const formatPrice = (value) => `SAR ${value?.toLocaleString("en-US") || 0}`;
 
+function Pagination({ currentPage, totalPages }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const createPageURL = (pageNumber) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", pageNumber.toString());
+    return `${pathname}?${params.toString()}`;
+  };
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5; // Total number of page items to show (excluding ellipses)
+
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      if (currentPage <= 4) {
+        for (let i = 1; i <= 5; i++) pages.push(i);
+        pages.push("...");
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 3) {
+        pages.push(1);
+        pages.push("...");
+        for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i);
+      } else {
+        pages.push(1);
+        pages.push("...");
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
+        pages.push("...");
+        pages.push(totalPages);
+      }
+    }
+    return pages;
+  };
+
+  const isPreviousDisabled = currentPage <= 1;
+  const isNextDisabled = currentPage >= totalPages || totalPages === 0;
+
+  return (
+    <div className="mt-8 pt-8 flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-4 border-t border-border/40">
+      <Link
+        href={isPreviousDisabled ? "#" : createPageURL(currentPage - 1)}
+        className={`flex h-8 w-8 items-center justify-center rounded-md border border-border bg-white text-muted transition-colors hover:border-primary hover:text-primary ${
+          isPreviousDisabled ? "pointer-events-none opacity-50" : ""
+        }`}
+      >
+        <FiChevronLeft size={16} />
+      </Link>
+
+      <div className="flex items-center gap-1">
+        {getPageNumbers().length > 0 ? (
+          getPageNumbers().map((pageNum, index) => {
+            if (pageNum === "...") {
+              return (
+                <span
+                  key={`ellipsis-${index}`}
+                  className="flex h-8 w-8 items-center justify-center text-xs text-muted"
+                >
+                  ...
+                </span>
+              );
+            }
+            return (
+              <Link
+                key={pageNum}
+                href={createPageURL(pageNum)}
+                className={`flex h-8 w-8 items-center justify-center rounded-md border text-xs font-medium transition-colors ${
+                  currentPage === pageNum
+                    ? "border-primary bg-primary text-white"
+                    : "border-border bg-white text-muted hover:border-primary hover:text-primary"
+                }`}
+              >
+                {pageNum}
+              </Link>
+            );
+          })
+        ) : (
+          <span className="flex h-8 w-8 items-center justify-center rounded-md border border-primary bg-primary text-xs font-medium text-white">
+            1
+          </span>
+        )}
+      </div>
+
+      <Link
+        href={isNextDisabled ? "#" : createPageURL(currentPage + 1)}
+        className={`flex h-8 w-8 items-center justify-center rounded-md border border-border bg-white text-muted transition-colors hover:border-primary hover:text-primary ${
+          isNextDisabled ? "pointer-events-none opacity-50" : ""
+        }`}
+      >
+        <FiChevronRight size={16} />
+      </Link>
+    </div>
+  );
+}
+
 function Breadcrumbs({ place }) {
   return (
     <div className="text-xs md:text-sm font-medium text-gray-700">
-      Home / {place.country || "Saudi Arabia"} / {place.region || "Middle East"} / {place.name} / Search results
+      Home / {place.country || "Saudi Arabia"} / {place.region || "Middle East"}{" "}
+      / {place.name} / Search results
     </div>
   );
 }
@@ -32,7 +138,9 @@ function SearchBar({ place }) {
         <div className="flex items-center gap-2 rounded-md border border-accent/60 px-3 py-2">
           <span className="text-sm ">Check In {data.checkIn || "Not set"}</span>
           <span className="text-sm ">—</span>
-          <span className="text-sm ">Check Out {data.checkOut || "Not set"}</span>
+          <span className="text-sm ">
+            Check Out {data.checkOut || "Not set"}
+          </span>
         </div>
         <div className="flex items-center gap-2 rounded-md border border-accent/60 px-3 py-2">
           <span className="text-sm ">Total Guest : {data.totalGuest || 0}</span>
@@ -116,7 +224,8 @@ function Filters({
       </div>
 
       <div className="rounded-lg border border-border bg-white p-3 text-xs text-muted shadow-sm">
-        Flexible booking. Filters update instantly based on available properties.
+        Flexible booking. Filters update instantly based on available
+        properties.
       </div>
     </aside>
   );
@@ -142,7 +251,9 @@ function PropertyCard({ property }) {
               <h3 className="text-lg font-semibold text-link sm:text-xl">
                 {property.name}
               </h3>
-              {property.dealLabel && <span className={navPill}>{property.dealLabel}</span>}
+              {property.dealLabel && (
+                <span className={navPill}>{property.dealLabel}</span>
+              )}
               {property.genius ? (
                 <span className="rounded-full bg-primary/10 px-2 py-1 text-xs font-semibold text-primary">
                   Genius
@@ -208,16 +319,28 @@ function PropertyCard({ property }) {
   );
 }
 
-export default function PlacesClient({ place, initialProperties = [] }) {
-  const properties = initialProperties;
+export default function PlacesClient({
+  place,
+  initialProperties = [],
+  initialPagination = {},
+}) {
+  const [properties, setProperties] = useState(initialProperties);
+  const [pagination, setPagination] = useState(initialPagination);
+  const [isLoading, setIsLoading] = useState(false);
+  const pageSize = 15; // 15 properties per page
+
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
+
   const prices = useMemo(
     () => properties.map((property) => property.price || 0),
     [properties],
   );
+
   const priceBounds = useMemo(
-    () => ({ 
-      min: prices.length > 0 ? Math.min(...prices) : 0, 
-      max: prices.length > 0 ? Math.max(...prices) : 1000 
+    () => ({
+      min: prices.length > 0 ? Math.min(...prices) : 0,
+      max: prices.length > 0 ? Math.max(...prices) : 1000,
     }),
     [prices],
   );
@@ -233,6 +356,55 @@ export default function PlacesClient({ place, initialProperties = [] }) {
     setBreakfastIncluded(false);
     setSortBy("top");
   }, [priceBounds.max]);
+
+  const fetchProperties = useCallback(
+    async (page) => {
+      setIsLoading(true);
+      try {
+        const response = await getPropertiesByCity(place.slug, page, pageSize);
+        const data = response.data.map((p) => {
+          const attr = p.attributes || p;
+          return {
+            id: p.id,
+            slug: attr.slug || p.documentId || p.id,
+            name: attr.name,
+            price: attr.price || 0,
+            oldPrice: attr.discountPrice,
+            rating: attr.Rating || attr.rating || 0,
+            ratingLabel: attr.ratingLabel,
+            reviewCount: attr.totalReview || attr.reviewCount || 0,
+            distance: attr.distance,
+            area: attr.address,
+            type: attr.propertyType || attr.type,
+            dealLabel: attr.dealType || attr.dealLabel,
+            breakfastIncluded: attr.breakfast,
+            perks:
+              attr.specialPerks?.map((item) =>
+                typeof item === "string" ? item : item.item,
+              ) || [],
+            image: [
+              attr.coverImage?.url || attr.coverImage?.data?.attributes?.url,
+              ...(attr.images?.map((img) => img.url || img.attributes?.url) ||
+                []),
+            ].filter(Boolean),
+            rank: attr.rank || 0,
+          };
+        });
+        setProperties(data);
+        setPagination(response.meta?.pagination || {});
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch (error) {
+        console.error("Error fetching properties:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [place.slug],
+  );
+
+  useEffect(() => {
+    fetchProperties(currentPage);
+  }, [currentPage, fetchProperties]);
 
   const filtered = useMemo(() => {
     const base = properties.filter((property) => {
@@ -276,8 +448,7 @@ export default function PlacesClient({ place, initialProperties = [] }) {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <h1 className="text-xl font-semibold">
-                  {place.name}: {filtered.length?.toLocaleString("en-US") || 0}{" "}
-                  properties found
+                  {place.name}: {pagination.total || 0} properties found
                 </h1>
                 <div className="mt-2 inline-flex items-center gap-2 text-xs text-muted">
                   <span>Sort by:</span>
@@ -298,20 +469,33 @@ export default function PlacesClient({ place, initialProperties = [] }) {
             </div>
 
             <div className="mt-4 rounded-md border border-dashed border-border bg-subtle px-3 py-2 text-xs text-muted">
-              {filtered.length} stays match your filters in {place.name}.
+              {pagination.total || 0} stays match your filters in {place.name}.
             </div>
           </div>
 
-          <div className="space-y-4">
-            {filtered.map((property) => (
-              <PropertyCard key={property.id} property={property} />
-            ))}
-
-            {filtered.length === 0 ? (
-              <div className="rounded-lg border border-border bg-white p-6 text-center text-sm text-muted shadow-sm">
-                No properties match those filters. Try clearing one of them.
+          <div className="space-y-4 min-h-[400px]">
+            {isLoading ? (
+              <div className="flex h-64 items-center justify-center">
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
               </div>
-            ) : null}
+            ) : (
+              <>
+                {filtered.map((property) => (
+                  <PropertyCard key={property.id} property={property} />
+                ))}
+
+                {filtered.length === 0 ? (
+                  <div className="rounded-lg border border-border bg-white p-6 text-center text-sm text-muted shadow-sm">
+                    No properties match those filters. Try clearing one of them.
+                  </div>
+                ) : null}
+
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={pagination.pageCount || 1}
+                />
+              </>
+            )}
           </div>
         </section>
       </div>

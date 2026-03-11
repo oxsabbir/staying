@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { HeaderNav, SiteFooter } from "../../components/home";
 import PlacesClient from "../../components/places/PlacesClient";
-import { getCityBySlug, getCitySlugs } from "@/api/city";
+import { getCityBySlug } from "@/api/city";
 import { getPropertiesByCity } from "@/api/property";
 
 const navLinks = [
@@ -13,18 +13,13 @@ const navLinks = [
   "Airport taxis",
 ];
 
-export async function generateStaticParams() {
-  const slugs = await getCitySlugs();
-  return slugs.map((slug) => ({ slug }));
-}
-
 export default async function PlacePage({ params }) {
   const { slug } = await params;
 
-  // Fetch city info and properties from API (page 1, pageSize 1 for testing)
+  // Fetch city info and properties from API (page 1, pageSize 15)
   const [cityData, propertiesResponse] = await Promise.all([
     getCityBySlug(slug),
-    getPropertiesByCity(slug, 1, 1),
+    getPropertiesByCity(slug, 1, 15),
   ]);
 
   if (!cityData) {
@@ -81,7 +76,11 @@ export default async function PlacePage({ params }) {
   return (
     <div className="min-h-screen bg-bg text-text">
       <HeaderNav navLinks={navLinks} />
-      <PlacesClient place={place} initialProperties={properties} />
+      <PlacesClient 
+        place={place} 
+        initialProperties={properties} 
+        initialPagination={pagination}
+      />
       <SiteFooter />
     </div>
   );
