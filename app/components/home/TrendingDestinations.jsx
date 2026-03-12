@@ -24,8 +24,6 @@ export default function TrendingDestinations() {
       image: `${city.coverImage?.url || "/images/placeholder.jpg"}`,
     })) || [];
 
-  console.log(destinations);
-
   return (
     <section className="py-8">
       <div className="container">

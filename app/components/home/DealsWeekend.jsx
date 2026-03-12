@@ -26,9 +26,9 @@ export default function DealsWeekend() {
           <h2 className="text-[1.35rem] font-semibold">
             Deals for the weekend
           </h2>
-          <span className="text-muted">
+          {/* <span className="text-muted">
             Save 20% or more with early 2026 deals
-          </span>
+          </span> */}
         </div>
         <div className="mt-4">
           {isLoading ? (

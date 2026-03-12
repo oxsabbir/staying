@@ -14,7 +14,6 @@ export default function PropertyHighlights() {
     queryKey: ["recommendedProperties"],
     queryFn: fetchRecommendedProperties,
   });
-  console.log(data);
 
   if (error) return null;
 
@@ -61,7 +60,10 @@ export default function PropertyHighlights() {
                     <div className="p-4">
                       <h3 className="font-semibold">{attr.name}</h3>
                       <p className="my-2 text-sm text-muted">
-                        {attr.address || attr.area || attr.city?.name || "Saudi Arabia"}
+                        {attr.address ||
+                          attr.area ||
+                          attr.city?.name ||
+                          "Saudi Arabia"}
                       </p>
                       <div className="flex items-center gap-2 text-xs">
                         <span className="rounded-xs bg-primary px-1.5 py-0.5 text-white">

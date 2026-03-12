@@ -38,10 +38,18 @@ export default function PropertySlider({ items, navId = "property-slider" }) {
       >
         {items.map((card) => {
           const attr = card.attributes || card;
-          const imageUrl = attr.coverImage?.url || attr.image?.[0] || "/images/hotels/placeholder.jpg";
+          const imageUrl =
+            attr.coverImage?.url ||
+            attr.image?.[0] ||
+            "/images/hotels/placeholder.jpg";
           const slug = attr.slug || card.slug || card.documentId || card.id;
           const name = attr.name;
-          const location = attr.address || attr.area || attr.city?.name || attr.location || "Saudi Arabia";
+          const location =
+            attr.address ||
+            attr.area ||
+            attr.city?.name ||
+            attr.location ||
+            "Saudi Arabia";
           const price = attr.price;
           const rating = attr.Rating || attr.rating || "8.5";
           const ratingLabel = attr.ratingLabel || "Excellent";
