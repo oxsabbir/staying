@@ -339,7 +339,7 @@ export default function RoomDetailsClient({ initialProperty }) {
                 <div className="h-[180px] rounded-xs ">
                   {room.mapLink && (
                     <iframe
-                      src={room.mapLink}
+                      src={room.mapLink.includes("google.com/maps/embed") ? room.mapLink : `https://maps.google.com/maps?q=${encodeURIComponent(room.mapLink)}&output=embed`}
                       width="100%"
                       height="180"
                       style={{ border: 0 }}

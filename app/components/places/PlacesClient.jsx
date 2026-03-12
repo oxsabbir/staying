@@ -160,13 +160,19 @@ function Filters({
   onBreakfastIncludedChange,
   priceBounds,
 }) {
+  const getMapUrl = (link) => {
+    if (!link) return "";
+    if (link.includes("google.com/maps/embed")) return link;
+    return `https://maps.google.com/maps?q=${encodeURIComponent(link)}&output=embed`;
+  };
+
   return (
     <aside className="space-y-4">
       <div className="rounded-lg border border-border bg-white p-3 shadow-sm">
         <div className="h-[180px] rounded-xs ">
           {place.summary?.mapLink && (
             <iframe
-              src={place.summary.mapLink}
+              src={getMapUrl(place.summary.mapLink)}
               width="100%"
               height="180"
               style={{ border: 0 }}
