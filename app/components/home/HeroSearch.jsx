@@ -16,7 +16,7 @@ import {
 } from "react-icons/fi";
 import { useSearchContext } from "../../context/SearchContext";
 
-const SAUDI_CITIES = ["Riyadh", "Jeddah", "Mecca", "Medina", "AlUla", "Tabuk"];
+const SAUDI_CITIES = ["Makkah", "Jeddah", "Riyadh", "Medina", "AlUla", "Tabuk"];
 
 function RoomGuestSelector({ value, onChange, onDone }) {
   const updateValue = (field, delta) => {
@@ -94,7 +94,10 @@ export default function HeroSearch({
     if (cityData?.featuredCity) {
       return cityData.featuredCity.map((c) => ({
         name: c.name || c.attributes?.name,
-        slug: c.slug || c.attributes?.slug || (c.name || c.attributes?.name)?.toLowerCase().replace(/\s+/g, "-"),
+        slug:
+          c.slug ||
+          c.attributes?.slug ||
+          (c.name || c.attributes?.name)?.toLowerCase().replace(/\s+/g, "-"),
         type: "city",
       }));
     }
@@ -106,7 +109,10 @@ export default function HeroSearch({
   }, [cityData]);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState({ cities: [], properties: [] });
+  const [searchResults, setSearchResults] = useState({
+    cities: [],
+    properties: [],
+  });
   const [isSearching, setIsSearching] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [checkIn, setCheckIn] = useState("");
@@ -144,10 +150,10 @@ export default function HeroSearch({
       };
 
       const cityToSet = fixedCity || data.city || cities[0]?.name;
-      const matchedCity = cities.find(c => c.name === cityToSet) || cities[0];
+      const matchedCity = cities.find((c) => c.name === cityToSet) || cities[0];
       setSelectedItem(matchedCity);
       setSearchQuery(matchedCity?.name || "");
-      
+
       setCheckIn(data.checkIn || (defaultOneNight ? formatIso(todayDate) : ""));
       setCheckOut(
         data.checkOut || (defaultOneNight ? formatIso(tomorrowDate) : ""),
@@ -160,25 +166,25 @@ export default function HeroSearch({
     if (searchQuery.length > 1 && openDropdown === "city") {
       setIsSearching(true);
       if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
-      
+
       searchTimeoutRef.current = setTimeout(async () => {
         try {
           const [cityRes, propRes] = await Promise.all([
             searchCities(searchQuery),
-            searchProperties(searchQuery)
+            searchProperties(searchQuery),
           ]);
-          
+
           setSearchResults({
-            cities: cityRes.map(c => ({
+            cities: cityRes.map((c) => ({
               name: c.name || c.attributes?.name,
               slug: c.slug || c.attributes?.slug,
-              type: "city"
+              type: "city",
             })),
-            properties: propRes.map(p => ({
+            properties: propRes.map((p) => ({
               name: p.name || p.attributes?.name,
               slug: p.slug || p.attributes?.slug,
-              type: "property"
-            }))
+              type: "property",
+            })),
           });
         } catch (error) {
           console.error("Search failed:", error);
@@ -352,9 +358,14 @@ export default function HeroSearch({
                       <div className="absolute left-0 top-full z-20 mt-3 w-[300px] max-h-[400px] overflow-auto rounded-md border border-border bg-white p-3 text-text shadow-lg">
                         {isSearching ? (
                           <div className="flex items-center justify-center py-4">
-                            <FiLoader className="animate-spin text-link" size={24} />
+                            <FiLoader
+                              className="animate-spin text-link"
+                              size={24}
+                            />
                           </div>
-                        ) : searchQuery.length > 1 && searchResults.cities.length === 0 && searchResults.properties.length === 0 ? (
+                        ) : searchQuery.length > 1 &&
+                          searchResults.cities.length === 0 &&
+                          searchResults.properties.length === 0 ? (
                           <div className="py-2 text-center text-sm text-muted">
                             No destinations or properties found
                           </div>
@@ -383,61 +394,85 @@ export default function HeroSearch({
                                     >
                                       <FiMapPin className="text-muted" />
                                       <div>
-                                        <p className="font-semibold">{item.name}</p>
-                                        <p className="text-xs text-muted">Saudi Arabia</p>
+                                        <p className="font-semibold">
+                                          {item.name}
+                                        </p>
+                                        <p className="text-xs text-muted">
+                                          Saudi Arabia
+                                        </p>
                                       </div>
                                     </button>
                                   ))}
                                 </div>
                               </>
                             )}
-                            {(searchResults.cities.length > 0 || searchResults.properties.length > 0) && (
+                            {(searchResults.cities.length > 0 ||
+                              searchResults.properties.length > 0) && (
                               <div className="space-y-4">
                                 {searchResults.cities.length > 0 && (
                                   <div>
-                                    <p className="text-xs font-semibold uppercase text-muted">Destinations</p>
+                                    <p className="text-xs font-semibold uppercase text-muted">
+                                      Destinations
+                                    </p>
                                     <div className="mt-2 rounded-sm border border-border">
-                                      {searchResults.cities.map((item, index) => (
-                                        <button
-                                          key={item.slug}
-                                          type="button"
-                                          className={`flex w-full items-center gap-2 px-2 py-2 text-left text-sm ${
-                                            index !== searchResults.cities.length - 1 ? "border-b border-border" : ""
-                                          }`}
-                                          onClick={() => {
-                                            setSelectedItem(item);
-                                            setSearchQuery(item.name);
-                                            setOpenDropdown(null);
-                                          }}
-                                        >
-                                          <FiMapPin className="text-muted" />
-                                          <p className="font-semibold">{item.name}</p>
-                                        </button>
-                                      ))}
+                                      {searchResults.cities.map(
+                                        (item, index) => (
+                                          <button
+                                            key={item.slug}
+                                            type="button"
+                                            className={`flex w-full items-center gap-2 px-2 py-2 text-left text-sm ${
+                                              index !==
+                                              searchResults.cities.length - 1
+                                                ? "border-b border-border"
+                                                : ""
+                                            }`}
+                                            onClick={() => {
+                                              setSelectedItem(item);
+                                              setSearchQuery(item.name);
+                                              setOpenDropdown(null);
+                                            }}
+                                          >
+                                            <FiMapPin className="text-muted" />
+                                            <p className="font-semibold">
+                                              {item.name}
+                                            </p>
+                                          </button>
+                                        ),
+                                      )}
                                     </div>
                                   </div>
                                 )}
                                 {searchResults.properties.length > 0 && (
                                   <div>
-                                    <p className="text-xs font-semibold uppercase text-muted">Properties</p>
+                                    <p className="text-xs font-semibold uppercase text-muted">
+                                      Properties
+                                    </p>
                                     <div className="mt-2 rounded-sm border border-border">
-                                      {searchResults.properties.map((item, index) => (
-                                        <button
-                                          key={item.slug}
-                                          type="button"
-                                          className={`flex w-full items-center gap-2 px-2 py-2 text-left text-sm ${
-                                            index !== searchResults.properties.length - 1 ? "border-b border-border" : ""
-                                          }`}
-                                          onClick={() => {
-                                            setSelectedItem(item);
-                                            setSearchQuery(item.name);
-                                            setOpenDropdown(null);
-                                          }}
-                                        >
-                                          <FiHome className="text-muted" />
-                                          <p className="font-semibold">{item.name}</p>
-                                        </button>
-                                      ))}
+                                      {searchResults.properties.map(
+                                        (item, index) => (
+                                          <button
+                                            key={item.slug}
+                                            type="button"
+                                            className={`flex w-full items-center gap-2 px-2 py-2 text-left text-sm ${
+                                              index !==
+                                              searchResults.properties.length -
+                                                1
+                                                ? "border-b border-border"
+                                                : ""
+                                            }`}
+                                            onClick={() => {
+                                              setSelectedItem(item);
+                                              setSearchQuery(item.name);
+                                              setOpenDropdown(null);
+                                            }}
+                                          >
+                                            <FiHome className="text-muted" />
+                                            <p className="font-semibold">
+                                              {item.name}
+                                            </p>
+                                          </button>
+                                        ),
+                                      )}
                                     </div>
                                   </div>
                                 )}

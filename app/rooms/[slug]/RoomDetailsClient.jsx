@@ -539,7 +539,10 @@ export default function RoomDetailsClient({ initialProperty }) {
                       <div className="text-2xl font-black text-primary leading-none">
                         SAR {calculateTotalPrice(item.priceMultiplier || 1).toLocaleString()}
                       </div>
-                      <div className="text-[10px] text-muted mt-1 font-medium">
+                      <div className="text-[11px] text-text mt-1 font-semibold">
+                        SAR {Math.round((room.basePrice || 0) * (item.priceMultiplier || 1)).toLocaleString()} / night
+                      </div>
+                      <div className="text-[10px] text-muted mt-0.5 font-medium">
                         +SAR 0 taxes and charges
                       </div>
                     </div>
